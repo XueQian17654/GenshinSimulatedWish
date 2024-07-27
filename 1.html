@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="./static/jquery.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'HYWenHei';
+            src: url('./static/HYWenHei-85J.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+
+        * {
+            cursor: url(./static/cur.png), all-scroll;
+            font-family: 'HYWenHei';
+            font-size: 2vw;
+            
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            --p: 100%;
+            --c1: #fff;
+            --c2: #fff;
+            --c3: #fff;
+            --c4: #fff;
+            --c5: #fff;
+        }
+
+        #video {
+            position: absolute;
+            display: none;
+            opacity: 0;
+        }
+
+        #bac2 {
+            position: absolute;
+            display: none;
+        }
+
+        #people, #allinall {
+            position: absolute;
+            display: none;
+            width: 100vw;
+            height: 56.25vw;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #bac3 {
+            opacity: 0;
+            width: 100vw;
+            height: 56.25vw;
+            display: none;
+            position: absolute;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle, var(--c1) calc(var(--p) / 20), var(--c2) calc(var(--p) / 5), var(--c3) calc(var(--p) / 3.33), var(--c4) calc(var(--p) / 1.42), var(--c5) var(--p), #0000 100%);
+        }
+
+        .xiu {
+            height: 17vw;
+            position: absolute;
+        }
+
+        #btnd {
+            width: 100vw;
+            height: 56.25vw;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            border: 0;
+            background: none;
+        }
+
+        button:hover {
+            filter: drop-shadow(2px 2px 0px white) drop-shadow(-1px -1px 0px white) drop-shadow(-1px 1px 0px white) drop-shadow(1px -1px 0px white);
+        }
+
+        button:active {
+            filter: brightness(1.5);
+        }
+
+        img {
+            -webkit-user-drag: none;
+        }
+
+        .title {
+            background-color: #0005;
+            border-radius: 1vw;
+            padding: 1px;
+            font-size: 1.5vw;
+            margin-right: 2vw;
+            height: 1.5vw;display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            padding: 0.2vw;
+        }
+
+        .add {
+            background-color: #e9e4d5;
+            border-radius: 50%;
+            color: #394252;
+            width: 1.2vw;
+            height: 1.2vw;
+            float: right;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2vw;
+            margin-right: 0.15vw;
+            margin-left: 2vw;
+        }
+
+        .star {
+            opacity: 0;
+        }
+
+        #tiao[src="./static/tiao.png"] {
+            width: 4.5vw;
+            top: 2vw;
+            right: 3vw;
+            filter: brightness(1.3);
+        }
+
+        img[src="./static/close.png"] {
+            width: 3vw;
+            top: 1.5vw;
+            right: 3vw;
+        }
+
+        .ding:hover {
+            filter: brightness(1.06);
+            transform: scale(1.03);
+        }
+
+        .anall {
+            display: flex;
+            opacity: 0;
+            margin: 1px;
+            width: 7.543vw;
+            height: 31.75vw;
+            /* border-radius: 3.8vw; */
+
+            background-position: center;
+            background-size: auto 100%;
+            background-repeat: repeat-x;
+
+            justify-content: flex-end;
+            align-items: center;
+            flex-direction: column;
+            
+            /* background-image: url(./static/res/yaoyao2.png), linear-gradient(180deg, #516883 10%, #bec5ab 45%, #bec5ab 55%, #516883 100%);
+            box-shadow: 0px 0px 15px 4px #4290ef; */
+        }
+
+        .starf {
+            font-size: 1.7vw;
+            margin-bottom: 3vw;
+            color: #ffc627;
+            /* text-shadow: 1px 1px #e4a534, -1px -1px #e4a534, 1px -1px #e4a534, -1px 1px #e4a534; */
+        }
+
+        .ding {
+            position: absolute;
+            top: 33vw;
+            left: 19vw;
+            width: 8vw;
+            height: 8vw;
+        }
+
+        dialog {
+            border: 0;
+            overflow: hidden;
+            color: #3f515c;
+            background-color: #0000;
+        }
+
+        #copy, #dd {
+            background-image: url(./static/dingui.png);
+            width: 67.37vw;
+            height: 40.62vw;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .choicending, #chosen {
+            /* color: #000; */
+            justify-content: center;
+            align-items: flex-end;
+            white-space: nowrap;
+            overflow:hidden;
+            display: flex;
+            float: left;
+            border-radius: 1vw;
+            font-size: 1.3vw;
+            margin: 0.5vw;
+            width: 6vw;
+            height: 8vw;
+            border-top: #e59d39 0.3vw solid;
+            border-bottom: #e9e5db 0.3vw solid;
+            background-image: linear-gradient(180deg, #e59d39 70%, #e9e5db 0%);
+            box-shadow: 0.1vw 0.1vw 0.5vw 0 #0006;
+        }
+
+        .cling {
+            border-top: rgb(188, 236, 57) 0.3vw solid;
+            border-bottom: rgb(188, 236, 57) 0.3vw solid;
+        }
+
+        /* .cling::after {
+            position: absolute;
+            background: rgb(188, 236, 57);
+            z-index: 999;
+            text-align: center;
+            clip-path: xywh(0 0 100% 100% round 0 15%);
+            color: rgb(106, 132, 7);
+            font-size: 12px !important;
+            padding: 2px 4px 0;
+            content: "✔";
+            transform: translateX(calc(3vw - 46%)) translateY(calc(-5vw + 40%));
+        } */
+    </style>
+    <style>
+        dialog:-internal-dialog-in-top-layer::backdrop {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .gun::-webkit-scrollbar {
+            margin-left: 0.2vw;
+            width: 1.5vw;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAUWBAMAAAAvCo1CAAAALVBMVEUAAAD///+MbEaVeFCMcEaXc0+7qn+ijFDs5tn///+1oXHh18TNv5+Zd1G2oXJdfzgOAAAAD3RSTlMABxorJDceLktMNUY4RSYNVgv7AAACVElEQVR42u3PQU7bQBTG8URCsM2oJexYWLkAsn2BxBJrZFmskLAE8QEQGckS60b0AuUCOJ1WbCv1DF2z4wI5RSce50XNM2u6+H+bPL8vP8948EEZ3pTvVZW11/3NgbV20V+dWytMoR8d06he/gpMo9Xya8c0WgpTaClMIWEaCdNImEbCNBKm0W/NPArLlTBB210tbA855/bY4fYk5/MvOxL0IuwuVCeCyrWwbeVCns1pNzV21L2wjUdjs/bbNnINn9qjh9IzP+9uX7WoKT+/vZoqMPlmY8x8bsxtURgz9oMJJ+3acRGnF7KXDI1HeRIXxkdXRZJl6VlfdZxn0SS+VJVf3OfTaDq7KvuqZBpFs7SvSpMoirL3qwkKhUKhUCgUCoVCoVAoFAqFQqFQKBQKhUKhUCgUCoVCoVAoFAqFQqFQKBQKhUKhUCgUCoVCoVAoFAqFQqFQKBQKhUKhUCgUCoVCoVAoFAqFQqFQKBQKhUKhUCgUCoVCoVAoFAqFQqFQKBQKhUKhUCjUf6D6q/tkGkWz/irfVFeqGhpznGfRJL40PZUpkixLz3qr2zyJC7Op1GHjIk4v/O9ofz/3rCjCsGsr6+Oa8tPbq6lcY32uQ3NoN6nds3koT51rnxahOrJtnCvHZu1Rm1Cd2J9/fJxnHrVzY0dd9f3J59GztXOb8dtWHdm6fXbuxbn2X1/s3fYawgQtBiHnHWtcE5BcfnBgbbeqd2iP2X20Y48KCXtSSJhGwjQSJkgzQZoJ0kyQZoI0E6TZSpBiVpBiglQqQSrDm3LwQfkLbQLHiNngEyEAAAAASUVORK5CYII=);
+            background-repeat: no-repeat;
+            background-size: 1.5vw 99%;
+            background-position: 50%;
+        }
+
+        .g1::-webkit-scrollbar-thumb {
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAFsCAMAAAAg6sMFAAAAYFBMVEWuk12tlFqukV2+p3ytkV6zmVmqkFzx6t1HcEyskl6qlVXx6t3dz7fj2cKuk2G0nmyulV3s49Po3suvlWDq4tCrk2CzmWbw6tzbzrTj2cSvlGOxmGesk2Do38zp4M7r49Epu/KIAAAAIHRSTlNCHyxOQRQn2QAxDNeAkkJHKbmjMK5ACtZ+kkNFKKWrs0WvS5IAAACJSURBVFjD7djHFYIAFAXRIf5HBnO2/y5dAOrCCjxvdreFQZKUbBNJEpKUAumqkWyXcZtVMkzxvFJKqKC/R8SmpxA1dBER0ZEfqGhj7kRFTrPoyB6INbAsy7Isy7Isy7Isy7KsP9XnijXkX8espaKG83LTqFHB5fE+bcuFm4b5wq2Hbvx57z5n7wVP41wTj4Yx5gAAAABJRU5ErkJggg==);
+            background-repeat: no-repeat;
+            background-size: 0.5vw 86%;
+            background-position: 50%;
+        }
+
+        .g2::-webkit-scrollbar-thumb {
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAFsCAMAAAAg6sMFAAAAYFBMVEWuk12tlFqukV2+p3ytkV6zmVmqkFzx6t1HcEyskl6qlVXx6t3dz7fj2cKuk2G0nmyulV3s49Po3suvlWDq4tCrk2CzmWbw6tzbzrTj2cSvlGOxmGesk2Do38zp4M7r49Epu/KIAAAAIHRSTlNCHyxOQRQn2QAxDNeAkkJHKbmjMK5ACtZ+kkNFKKWrs0WvS5IAAACJSURBVFjD7djHFYIAFAXRIf5HBnO2/y5dAOrCCjxvdreFQZKUbBNJEpKUAumqkWyXcZtVMkzxvFJKqKC/R8SmpxA1dBER0ZEfqGhj7kRFTrPoyB6INbAsy7Isy7Isy7Isy7KsP9XnijXkX8espaKG83LTqFHB5fE+bcuFm4b5wq2Hbvx57z5n7wVP41wTj4Yx5gAAAABJRU5ErkJggg==);
+            background-repeat: no-repeat;
+            background-size: 0.5vw 95%;
+            background-position: 50%;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+    <svg style="display: none;">
+        <defs>
+            <filter id="unsharpy">
+                <feGaussianBlur  result="blurOut" in="SourceGraphic" stdDeviation="5"/>
+                <feComposite operator="arithmetic" k1="0" k2="2" k3="-0.01" k4="0"
+                in="SourceGraphic" in2="blurOut" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div><!-- Copyright -->
+        <dialog id="copy">
+            <img src="./static/close2.png" style="position:absolute;width: 2vw;top: 2.5vw;right: 2.5vw;z-index: 520;" onclick="$('#copy')[0].close();$('#adingclose')[0].play()">
+            <div style="width: 67.37vw;height: 40.62vw;position: absolute;padding-left: 2vw;display: flex;flex-direction: column;align-items: center;">
+                <p style="color:black;">免责声明</p>
+                <div class="gun g2" style="overflow: auto;width: 58.95vw;height: 30vw;font-size: 1.5vw;">
+                    　　此网站并不属于米哈游，此网站中的所有资料都来自第三方网站或游戏本身的截图（录制）。<br>
+                    　　如果您是米哈游的人，如有侵犯您的权益，希望关闭此网站，请及时联系，我们将立即删除。<br>
+                    　　所有产品名称、徽标和品牌均为其在中国和或其他国家各自所有者的财产。<br>
+                    　　此网站开发人员保留对此网站源代码的所有权利。<br>
+                    　　技术宅改变世界。<br>
+                    <img src="./static/xq.svg" style="width: 30vw;">
+                </div>
+            </div>
+        </dialog>
+        <span style="position: absolute;z-index: 1314;color: white;right: 0.25vw;top: 56vw;translate: 0 -100%;font-size: 1vw;text-shadow: 1px 1px 2px black;background-color: #0bf7;border-radius: 1vw;filter: blur(3px);">&nbsp;&nbsp;Copyright (c) 2019 - 2039 XueQian&nbsp;&nbsp;</span>
+        <span style="position: absolute;z-index: 1314;color: white;right: 0.25vw;top: 56vw;translate: 0 -100%;font-size: 1vw;text-shadow: 1px 1px 2px black;background-color: #0bf0;border-radius: 1vw;" onclick="$('#adingopen')[0].play();document.querySelector('#copy').showModal();">&nbsp;&nbsp;Copyright (c) 2019 - 2039 XueQian&nbsp;&nbsp;</span>
+    </div>
+
+    <!-- Input -->
+    <dialog id="in" style="background-color: white;width: 31.54613vw;height: 31.54613vw;padding: 0;border-radius: 1vw;">
+        <a style="position:absolute;top: 1.5vw;right: 2vw;z-index: 520;color: #a6a6a6;font-size: 1.5vw;" onclick="$('#in')[0].close();">✖</a>
+        <div style="width: 100%;height: 40.62vw;position: absolute;display: flex;flex-direction: column;align-items: center;">
+            <p style="color: black;font-size: 1.4vw;margin-top: 2.2vw;transform: scale(0.91);margin-bottom: 0.9vw;">扫码支付</p>
+            <p style="color: #ff6c3b;font-size: 1.6vw;margin: 0;"><span style="font-size: 1.6vw;font-weight: bold;font-family: Arial;">¥</span>&nbsp;648.00</p>
+            <p style="font-size: 1vw;color: #6a6a6a;transform: scale(0.91);margin-top: 1vw;margin-bottom: 1.3vw;">商品：6480 创世结晶</p>
+            <p style="font-size: 1vw;color: #000000;margin-top: 0.3vw;">
+                <span id="zfb" style="font-size: 1vw;padding: 0.5vw;border: 1px solid #d2bb8c;border-radius: 0.5vw;background-color: #fdf9ef;padding-left: 1.2vw;padding-right: 1vw;margin-right: 2vw;"><img src="./static/zhifubao.svg" style="width: 1vw;margin-right: 0.5vw;">支付宝<span style="font-size: 1vw;color: white;background-color: #ff3009;padding: 0.15vw;border-radius: 0.4vw;transform: scale(0.7);display: inline-block;padding-left: 0.5vw;padding-right: 0.5vw;">推荐</span></span>
+                <span id="wx" style="font-size: 1vw;padding: 0.5vw;border: 1px solid #e9e9e9;border-radius: 0.5vw;background-color: white;padding-left: 2vw;padding-right: 2vw;"><img src="./static/weixin.svg" style="width: 1vw;margin-right: 0.5vw;">微信支付</span>
+            </p>
+            <img id="qr" src="./static/inz.jpg" style="width: 9vw;padding: 0.6vw;border: 2px solid #e9e9e9;border-radius: 1vw;margin-top: 0.5vw;">
+            <p id="paytip" style="font-size: 1.5vw;transform: scale(0.5);margin: 0;color: #8f8f8f;margin-top: 0.3vw;">支付宝扫码</p>
+            <script>
+                $('#zfb').click(() => {
+                    $('#qr').attr('src','./static/inz.jpg');
+                    $('#zfb').css({'background-color': '#fdf9ef','border': '1px solid #d2bb8c'});
+                    $('#wx').css({'background-color': 'white','border': '1px solid #e9e9e9'});
+                    $('#paytip').text('支付宝扫码');
+                });
+                $('#wx').click(() => {
+                    $('#qr').attr('src','./static/inw.jpg');
+                    $('#zfb').css({'background-color': 'white','border': '1px solid #e9e9e9'});
+                    $('#wx').css({'background-color': '#fdf9ef','border': '1px solid #d2bb8c'});
+                    $('#paytip').text('微信扫码');
+                });
+            </script>
+        </div>
+    </dialog>
+
+    <div style="position: absolute;"><img src="./static/background.png" style="width: 100vw;"></div>
+    <div id="btnd">
+        <div style="position: absolute;top: 1.5vw;left: 3vw;display: flex;align-items: center;">
+            <img src="./static/icon.png" style="width: 3vw;height: fit-content;">
+            <a style="font-size: 1.5vw;color: #fff;text-shadow: 1px 1px 2px black;">&nbsp;&nbsp;&nbsp;&nbsp;祈愿</a>
+        </div>
+        <img src="./static/title.png" style="position: absolute;width: 10vw;top: 0;" onclick="document.querySelector('#tuang').play()">
+        <div style="position: absolute;top: 1.5vw;right: 3vw;display: inline-flex;align-items: center;">
+            <div class="title">
+                <img src="./static/yuanshi.png" style="height: 1.5vw;width: 1.5vw;margin-right: 0.5vw;">
+                0
+                <span class="add" onclick="$('#in')[0].showModal();">
+                    <svg style="width: 0.7vw;" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M12 5.625V6.375H6.375V12H5.625V6.375H0V5.625H5.625V0H6.375V5.625H12Z"></path></svg>
+                </span>
+            </div>
+            <div class="title" style="padding-right: 1vw;">
+                <img src="./static/xiangyu.png" style="height: 1.5vw;width: 1.5vw;margin-right: 0.5vw;">
+                ∞
+            </div>
+            <img src="./static/close.png" style="width: 3vw;">  
+            <!-- onclick="if (document.fullscreenElement === null) {$('body')[0].requestFullscreen()} else {document.exitFullscreen()}" -->
+        </div>
+        <img src="./static/changzhu.png" style="width: 68vw;height: fit-content;position: absolute;translate: 0 -2.8vw;"><!---->
+        <div style="height: fit-content;position: absolute;right: 3vw;bottom: 2vw;">
+            <button id="wish">
+                <img src="./static/po.png" style="width: 18.2vw;">
+            </button>
+            <button id="wish10">
+                <img src="./static/pt.png" style="width: 18.2vw;">
+            </button>
+        </div>
+
+        <div class="ding">
+            <img src="./static/dingico.png" style="width: 8vw;position: absolute;top: 0;left: 0;">
+            <span id="dingtext" style="position: absolute;font-size: 1vw;width: max-content;line-height: 1.6vw;translate: -50% -50%;left: 4vw;bottom: 0;">奔行定轨</span>
+        </div>
+        <dialog id="dd">
+            <img src="./static/close2.png" style="position:absolute;width: 2vw;top: 2.5vw;right: 2.5vw;z-index: 520;" onclick="$('#dd')[0].close();$('#adingclose')[0].play()">
+            <div id="dingcho" style="width: 67.37vw;height: 40.62vw;position: absolute;padding-left: 2vw;display: flex;flex-direction: column;align-items: center;justify-content: space-evenly;">
+                <p>选择定轨物品</p>
+                <div id="list" class="gun g1" style="overflow: auto;width: 58.95vw;height: 24.1165vw;"></div>
+                <p style="font-size: 1.7vw;">为<span id="dingname" style="font-size: 1.7vw;color: rgb(255, 154, 0);">沈乐妍</span>定轨</p>
+                <button id="dingbtny" style="margin-bottom: 3vw;">
+                    <img src="./static/dingbtncho.png" style="width: 20vw;">
+                </button>
+            </div>
+            <div id="dingcan" style="width: 67.37vw;height: 40.62vw;position: absolute;display: flex;flex-direction: column;justify-content: space-evenly;align-items: center;">
+                <p>已定轨物品</p>
+                <div id="chosen" style="float: none;"></div>
+                <p style="font-size: 1.5vw;">命定值：<span id="dingval" style="font-size: 1.5vw;color: rgb(255, 154, 0);">0</span>/1</p>
+                <button id="dingbtnc">
+                    <img src="./static/dingbtncan.png" style="width: 20vw;">
+                </button>
+            </div>
+        </dialog>
+        <script>
+            $('.ding').click(() => {
+                $('#adingopen')[0].play()
+                if (ding.eng == '') {
+                    $('#dingcho').css('display', 'flex')
+                    $('#dingcan').css('display', 'none')
+
+                    i5 = list.filter(item => item.star === 5)
+                    n = ''
+                    for (let i = 0; i < i5.length; i++) {
+                        if (i == 0) {
+                            n += `<div class="choicending cling" onclick="dingchan('${i5[i].eng}')" style="background-image: linear-gradient(180deg, #e59d3900 70%, #e9e5db 0%), url(./static/${i5[i].type == 'peo' ? 'dp' : 'kni'}/${i5[i].eng}.png), linear-gradient(180deg, #e59d39 70%, #e9e5db00 0%);background-size: cover;background-position: center;background-repeat: no-repeat;">${i5[i].name}</div>`
+                            $('#dingname').html(i5[i].name)
+                            $('#dingname').data('eng', i5[i].eng)
+                        } else {
+                            n += `<div class="choicending" onclick="dingchan('${i5[i].eng}')" style="background-image: linear-gradient(180deg, #e59d3900 70%, #e9e5db 0%), url(./static/${i5[i].type == 'peo' ? 'dp' : 'kni'}/${i5[i].eng}.png), linear-gradient(180deg, #e59d39 70%, #e9e5db00 0%);background-size: cover;background-position: center;background-repeat: no-repeat;">${i5[i].name}</div>`
+                        }
+                    }
+                    $('#list').html(n)
+                } else {
+                    $('#dingcho').css('display', 'none')
+                    $('#dingcan').css('display', 'flex')
+
+                    $('#dingval').html(ding.value)
+                    $('#chosen').html(`${getengisobj(ding.eng).name}`)
+                    $('#chosen')[0].style = `background-image: linear-gradient(180deg, #e59d3900 70%, #e9e5db 0%), url(./static/${getengisobj(ding.eng).type == 'peo' ? 'dp' : 'kni'}/${ding.eng}.png), linear-gradient(180deg, #e59d39 70%, #e9e5db00 0%);background-size: cover;background-position: center;background-repeat: no-repeat;`
+                }
+
+                document.querySelector('#dd').showModal()
+            })
+
+            function dingchan(eng) {
+                $('#adingc')[0].play()
+
+                i5 = getengisobj(eng)
+                $('#dingname').html(i5.name)
+                $('#dingname').data('eng', i5.eng)
+                
+                nl = document.querySelectorAll('.choicending')
+                for (let i = 0; i < nl.length; i++) {
+                    nl[i].classList.remove('cling')
+                    if (nl[i].innerHTML == i5.name) {
+                        nl[i].classList.add('cling')
+                    }
+                }
+
+                return
+            }
+
+            $('#dingbtny').click(() => {
+                $('#adingy')[0].play()
+
+                ding.eng = $('#dingname').data('eng')
+                ding.value = 0
+                $('#dingtext').html('<span style="font-size: 1vw;color: rgb(255, 154, 0);">0</span>/1')
+                localStorage.setItem('ding', JSON.stringify(ding))
+                $('.ding').click()
+            })
+
+            $('#dingbtnc').click(() => {
+                $('#adingc')[0].play()
+
+                ding.eng = ''
+                ding.value = 0
+                $('#dingtext').html('奔行定轨')
+                localStorage.setItem('ding', JSON.stringify({'eng': '', 'value': 0}))
+                $('.ding').click()
+            })
+        </script>
+    </div>
+    <div id="video">
+        <video style="width: 100vw;pointer-events: none;" muted>
+            <source src="./static/d/o4.mp4" type="video/mp4">
+        </video>
+        <img src="./static/tiao.png" style="display: none;opacity: 0;position:absolute;width: 4.5vw;top: 2vw;right: 3vw;filter: brightness(1.3);" onclick="tiaovideo()">
+    </div>
+    <div id="bac2">
+        <img src="./static/background2.png" style="width: 100vw;">
+    </div>
+    <div id="bac3"></div>
+    <div id="people">
+        <div style="z-index: 1;position: absolute;translate: -25vw 2.8125vw;transform: scale(0.9);opacity: 0;" id="infor">
+            <span style="font-size: 10vw;translate: -6.5vw -3.9375vw;position: absolute;color: white;" id="yuansu">⊘</span>
+            <span style="font-size: 4vw;position: absolute;width: max-content;color: white;text-shadow: 1px 1px black, -1px -1px black, 1px -1px black, -1px 1px black;" id="name">吴思远</span>
+            <br>
+            <span style="position: absolute;translate: 1vw 1.125vw;width: max-content;font-size: 3vw;color: #ffc627;text-shadow: 1px 1px #e4a534, -1px -1px #e4a534, 1px -1px #e4a534, -1px 1px #e4a534;display: flex;" id="stars"></span>
+        </div>
+        <img id="kb" src="./static/kni.png" style="height: 60vw;translate: 0 1.7vw;position: absolute;opacity: 0;">
+        <img id="pi" src="./static/wsy.png" style="height: 56.25vw;translate: 0 1.7vw;transform: scale(3);filter: brightness(0);">
+        <img id="tiao" src="./static/close.png" style="position: absolute;">
+    </div>
+    <div id="allinall" style="opacity: 0;"></div>
+    <script>
+        var c9 = '<img src="./static/close.png" style="position: absolute;" onclick="location.reload()">'
+        for (let i = 0; i < 10; i++) {
+            c9 += `<div><div class="anall">
+            <img src="./static/huo.png" style="width: 4vw;">
+            <a class="starf"></a>
+        </div></div>`
+        }
+        $('#allinall').html(c9)
+    </script>
+
+    <audio id="get"><source src="./static/get.wav"></audio>
+    <audio id="new0"><source src="./static/new0.wav"></audio>
+    <audio id="new"><source src="./static/new.wav"></audio>
+    <audio id="show"><source src="./static/show.wav"></audio>
+    <audio id="ting1"><source src="./static/ting.wav"></audio>
+    <audio id="ting2"><source src="./static/ting.wav"></audio>
+    <audio id="ting3"><source src="./static/ting.wav"></audio>
+    <audio id="ting4"><source src="./static/ting.wav"></audio>
+    <audio id="ting5"><source src="./static/ting.wav"></audio>
+    <audio id="tuang"><source src="./static/tuang.wav"></audio>
+    <audio id="aud"></audio>
+
+    <audio id="adingopen"><source src="./static/dingopen.wav"></audio>
+    <audio id="adingclose"><source src="./static/dingclose.wav"></audio>
+    <audio id="adingy"><source src="./static/dingy.wav"></audio>
+    <audio id="adingc"><source src="./static/dingc.wav"></audio>
+
+    <script>
+        color = [['#5b8dd6', '#648ccc', '#3164b4', '#5989bc', '#2b3a4b'], ['#835bd6', '#b164cc', '#4f3e98', '#8059bc', '#2b2e4b'], ['#d6a95b', '#cca564', '#b46f31', '#bca359', '#4b462b']]
+        ani = []
+
+        function getRandomItems(count) {
+            i5 = list.filter(item => item.star === 5)
+            i4 = list.filter(item => item.star === 4)
+            i3 = list.filter(item => item.star === 3)
+
+            const rates = {
+                '5star': 1,
+                '4star': 9,
+                '3star': 10
+            }
+
+            function drawItem() {
+                let rand = Math.random() * 100;
+                if (rand <= rates['5star']) {
+                    return i5[Math.floor(Math.random() * i5.length)]
+                } else if (rand <= rates['5star'] + rates['4star']) {
+                    return i4[Math.floor(Math.random() * i4.length)]
+                } else {
+                    return i3[Math.floor(Math.random() * i3.length)]
+                }
+            }
+
+            let result = []
+            let highestStar = 0
+
+            for (let i = 0; i < count; i++) {
+                let item = drawItem();
+                if (ding.eng != '' && item.star == 5) {
+                    if (ding.value == 1) {
+                        item = getengisobj(ding.eng)
+                        ding.value = 0
+                    } else if (item.eng != ding.eng) {
+                        ding.value = 1
+                    }
+                }
+                result.push(item);
+                if (item.star > highestStar) {
+                    highestStar = item.star;
+                }
+            }
+
+            // 如果抽10次，确保至少有一个4星
+            if (count === 10 && highestStar < 4) {
+                result.pop();
+                result.push(i4[Math.floor(Math.random() * i4.length)])
+                highestStar = 4
+            }
+
+            // 如果80次确保有一个金
+            ll = []
+            for (let ii = 0; ii < history.length; ii++) {
+                ll.push(getengisobj(history[ii]).star)
+            }
+            ll.reverse()
+            if ((ll.indexOf(5) > 79 || (ll.indexOf(5) == -1 && ll.length > 79)) && highestStar < 5) {
+                result.pop()
+
+                item = i5[Math.floor(Math.random() * i5.length)]
+                if (ding.value == 1) {
+                    item = getengisobj(ding.eng)
+                    ding.value = 0
+                } else if (item.eng != ding.eng) {
+                    ding.value = 1
+                }
+                result.push(item)
+                highestStar = 5
+            }
+
+            // li = [list.filter(item => item.eng.search('jiligong') != -1)[0]];
+            // return {'list': li, 'highestStar': li[0].star};
+
+            return {
+                'list': result,
+                'highestStar': highestStar
+            };
+        }
+
+        function getengisobj(eng) {
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].eng == eng) {
+                    return list[i]
+                }
+            }
+            return undefined
+        }
+
+        function xy(l, xita) {
+            return [l * Math.sin(xita / 180 * Math.PI), -l * Math.cos(xita / 180 * Math.PI)]
+        }
+
+        function showpeo(item, last, all, fir=false) {
+            for (let i = 0; i < ani.length; i++) {
+                ani[i].cancel()
+            }
+            ani = []
+
+            $('#pi').off("click")
+            $('#tiao').off("click")
+            $('#tiao').css('pointer-events', 'none')
+            if (all.length > 1) {
+                $('#tiao').attr('src', './static/tiao.png')
+                $('#tiao').click(() => {allinall(all)})
+            } else {
+                $('#tiao').attr('src', './static/close.png')
+                $('#tiao').click(() => {location.reload()})
+            }
+
+            if (item.type == 'peo') {
+                $('#aud').html(`<source src="./static/res/${item.eng}.wav">`)
+                $('#aud').load()
+                $('#name').html(item.name)
+                $('#pi').attr('src', `./static/res/${item.eng}.png`)
+                $('#pi').css('height', item.star == 5 ? '86vw' : '60vw') // 56.25  translate: 0 1.7vw;
+                $('#pi').css('translate', '0vw' + (item.star == 5 ? ' 1.7vw' : ''))
+                $('#yuansu').html(`<img src="./static/${item.el}.png" style="width: 10vw;translate: 0 1vw;">`)
+            } else {
+                $('#aud').html(`<source src="">`)
+                $('#aud').load()
+                $('#name').html(item.name)
+                $('#pi').attr('src', `./static/kni/${item.eng}.png`)
+                if (item.el == 'faqi') {
+                    $('#pi').css('height', '20vw')
+                } else {
+                    $('#pi').css('height', '45vw')
+                }
+                $('#pi').css('translate', '0vw')
+                $('#yuansu').html(`<img src="./static/${item.el}.png" style="width: 10vw;translate: 0 2vw;filter: url(#unsharpy);">`)
+            }
+
+            setTimeout(() => {
+                for (let i = 0; i < 5; i++) {
+                    document.body.style.setProperty(`--c${i + 1}`, color[item.star - 3][i])
+                }
+
+                $('#people').css('display', 'flex')
+                document.querySelector('#new' + (fir ? '0' : '')).play()
+                ani.push(document.querySelector('#pi').animate([{
+                    transform: 'scale(3)'
+                }, {
+                    transform: 'scale(1)'
+                }], {
+                    duration: 300,
+                    ease: 'ease-in',
+                    fill: 'forwards'
+                }))
+
+                setTimeout(() => {
+                    ani.push(document.querySelector('#bac3').animate([{
+                        display: 'flex',
+                        opacity: 0
+                    }, {
+                        display: 'flex',
+                        opacity: 0.85
+                    }], {
+                        duration: 100,
+                        ease: 'ease-in',
+                        fill: 'forwards'
+                    }))
+                    x = 30
+                    si = setInterval(function () {
+                        document.body.style.setProperty('--p', '' + (x++) * 1 + '%')
+                        if (x == 100) {
+                            clearInterval(si)
+                        }
+                    }, 1)
+
+
+                    x2 = 0
+                    si2 = setInterval(function () {
+                        for (let i = 0; i < 26; i++) {
+                            $('#x' + (i + 1)).css('translate', `${xy(x2 * 5, i * 13.84)[0] / 10}vw ${xy(x2 * 5, i * 13.84)[1] / 10}vw`)
+                        }
+                        if (x2++ == 100) {
+                            clearInterval(si2)
+                        }
+                    }, 3)
+
+                    document.querySelectorAll('.xiu').forEach(el => {
+                        ani.push(el.animate([{
+                            opacity: 1
+                        }, {
+                            opacity: 1
+                        }, {
+                            opacity: 1
+                        }, {
+                            opacity: 0
+                        }], {
+                            duration: 800,
+                            ease: 'ease-in',
+                            fill: 'forwards'
+                        }))
+                    });
+                }, 100)
+
+                setTimeout(() => {
+                    document.querySelector('#show').play()
+                    ani.push(document.querySelector('#pi').animate([{
+                        translate: '0vw' + (item.star == 5 && item.type == 'peo' ? ' 1.7vw' : ''),
+                        filter: 'brightness(0)'
+                    }, {
+                        translate: '1.5vw' + (item.star == 5 && item.type == 'peo' ? ' 1.7vw' : ''),
+                        filter: 'brightness(0.5)' + (item.type == 'kni' ? 'drop-shadow(0.5vw 0.5vw 0 black)' : '')
+                    }, {
+                        translate: '3vw' + (item.star == 5 && item.type == 'peo' ? ' 1.7vw' : ''),  // 5.621  item.type == 'peo' ? '3vw' : '8vw'
+                        filter: 'brightness(1)' + (item.type == 'kni' ? 'drop-shadow(0.5vw 0.5vw 0 black)' : '')
+                    }], {
+                        duration: 200,
+                        ease: 'ease',
+                        fill: 'forwards'
+                    }))
+
+                    if (item.type == 'kni') {
+                        ani.push(document.querySelector('#kb').animate([{
+                            translate: '0vw' + (item.star == 5 && item.type == 'peo' ? ' 1.7vw' : ''),
+                            opacity: 0
+                        }, {
+                            translate: '3vw' + (item.star == 5 && item.type == 'peo' ? ' 1.7vw' : ''),  // 5.621  item.type == 'peo' ? '3vw' : '8vw'
+                            opacity: 1
+                        }], {
+                            duration: 200,
+                            ease: 'ease',
+                            fill: 'forwards'
+                        }))
+                    }
+
+                    ani.push(document.querySelector('#bac3').animate([{
+                        filter: 'brightness(1)',
+                        opacity: 1
+                    }, {
+                        filter: 'brightness(4)',
+                        opacity: 1
+                    }, {
+                        filter: 'brightness(4)',
+                        opacity: 0
+                    }], {
+                        duration: 300,
+                        ease: 'ease-in',
+                        fill: 'forwards'
+                    }))
+                    ani.push(document.querySelector('#infor').animate([{
+                        translate: '-20vw 2.8125vw',
+                        opacity: 0
+                    }, {
+                        translate: '-40vw 2.8125vw',
+                        opacity: 1
+                    }], {
+                        duration: 200,
+                        ease: 'ease-in',
+                        fill: 'forwards'
+                    }))
+                }, 1000)
+
+                setTimeout(() => {
+                xs = 1
+                t = ''
+                for (let i = 0; i < item.star; i++) {
+                    t += `<span class="star" id="star${i+1}">★</span>`
+                }
+                $('#stars').html(t)
+
+                si3 = setInterval(() => {
+                    document.querySelector('#ting' + xs).play()
+                    ani.push(document.querySelector('#star' + xs).animate([{
+                        // transform: 'scale(2.5)',
+                        opacity: 0,
+                        fontSize: '6vw'
+                    }, {
+                        // transform: 'scale(1)',
+                        opacity: 1,
+                        fontSize: '3vw'
+                    }], {
+                        duration: 150,
+                        ease: 'ease-in',
+                        fill: 'forwards'
+                    }))
+                    if (xs++ == item.star) {
+                        clearInterval(si3)
+                        setTimeout(() => {
+                            document.querySelector('#aud').play()
+
+                            if (last.length > 0) {
+                                $('#pi').click(() => {showpeo(last[0], last.slice(1), all)})
+                            } else if (all.length == 10 && last.length == 0) {
+                                $('#pi').click(() => {allinall(all)})
+                            }
+                            $('#tiao').css('pointer-events', 'auto')
+                        }, 500)
+                    }
+                }, 160)
+            }, 1600)
+            }, 100)
+        }
+
+        color2 = ['#4290ef', '#a494ff', '#ffd770']
+        var map = new Map()
+        function allinall(pli) {
+            document.querySelector('#aud').pause()
+
+            p5 = pli.filter(item => item.star === 5)
+            p4 = pli.filter(item => item.star === 4)
+            p3 = pli.filter(item => item.star === 3)
+
+            pli = p5.concat(p4).concat(p3)
+
+            p = pli.filter(item => item.type == 'peo')
+            k = pli.filter(item => item.type == 'kni')
+
+            pli = p.concat(k)
+            
+            map = new Map()
+            for (let i = 0; i < 10; i++) {
+                x = $(document.querySelectorAll('.anall')[i])
+                x.css('backgroundImage', 'linear-gradient(180deg, #0000 60%, #0009 100%), url(./static/' + (pli[i].type == 'peo' ? `res/${pli[i].eng}2.png` : `kni/${pli[i].eng}.png`) + '), linear-gradient(180deg, #516883 10%, #bec5ab 45%, #bec5ab 55%, #516883 100%)')
+                x.css('clip-path', 'polygon(3.7715vw 0, calc(100% - 3.7715vw) 0, 100% 3.7715vw, 100% calc(100% - 3.7715vw), calc(100% - 3.7715vw) 100%, 3.7715vw 100%, 0 calc(100% - 3.7715vw), 0 3.7715vw)')
+
+                x.parent().css('filter', `drop-shadow(${color2[pli[i].star - 3]} 0px 30px 2vw) drop-shadow(${color2[pli[i].star - 3]} 0px -30px 2vw)`)  // 0px 0px 3vw 2vw  
+                x.parent().css('zIndex', 20 - i)
+                if (pli[i].type == 'kni' && pli[i].el == 'faqi') {
+                    x.css('backgroundSize', '100%')
+                } else if (pli[i].type == 'kni') {
+                    x.css('backgroundSize', 'auto 100%')
+                }
+
+                $(x.children()[0]).attr('src', `./static/${pli[i].el}.png`)
+                $(x.children()[0]).css('filter', pli[i].type == 'kni' ? 'brightness(5)' : 'brightness(1.3)')
+                $(x.children()[1]).html('★'.repeat(pli[i].star))
+
+                var a = document.querySelectorAll('.anall')[i].animate([{
+                    opacity: 0,
+                    translate: '15vw 0'
+                }, {
+                    opacity: 1,
+                    translate: '0 0'
+                }], {
+                    duration: 300,
+                    ease: 'ease-in',
+                    fill: 'forwards'
+                })
+                a.pause()
+
+                map.set(i, a)
+            }
+
+            $(document).ready(() => {
+                for (let i = 0; i < 10; i++) {
+                    setTimeout((p) => {map.get(p).play()}, 80 * i, i)
+                }
+            
+                document.querySelector('#people').animate([{
+                    opacity: 1,
+                    display: 'none'
+                }, {
+                    opacity: 0,
+                    display: 'none'
+                }], {
+                    duration: 60,
+                    ease: 'ease-in',
+                    fill: 'forwards'
+                })
+
+                document.querySelector('#allinall').animate([{
+                    opacity: 0,
+                    display: 'flex'
+                }, {
+                    opacity: 1,
+                    display: 'flex'
+                }], {
+                    duration: 60,
+                    ease: 'ease-in',
+                    fill: 'forwards'
+                })
+
+                document.querySelector('#allinall').style.display = 'flex'
+            })
+        }
+
+        function tiaovideo(id) {
+            clearTimeout(waitvideo)
+
+            document.querySelector('video').pause()
+            document.querySelector('#get').pause()
+            
+            document.querySelector('#bac2').animate([{
+                display: 'block',
+                opacity: 0
+            }, {
+                display: 'block',
+                opacity: 1
+            }], {
+                duration: 100,
+                ease: 'ease-out',
+                fill: 'forwards'
+            })
+
+            // showpeo(item, [], [item])
+            showpeo(items.list[0], items.list.slice(1), items.list)
+            return
+        }
+
+        function wish(num) {
+            items = getRandomItems(num)
+            eng = []
+            for (let i = 0; i < items.list.length; i++) {
+                eng.push(items.list[i].eng)
+            }
+            localStorage.setItem('history', JSON.stringify(history.concat(eng)))
+            localStorage.setItem('ding', JSON.stringify(ding))
+
+            document.querySelector('video').childNodes[1].src = `./static/d/${num == 10 ? 't' : 'o'}${items.highestStar}.mp4`
+            $('video').load()
+
+            document.querySelector('#video').style.display = 'block'
+            document.querySelector('#video').animate([{
+                opacity: 0
+            }, {
+                opacity: 1
+            }], {
+                duration: 100,
+                ease: 'ease-out',
+                fill: 'forwards'
+            })
+
+            setTimeout(() => {
+                document.querySelector('video').play()
+                document.querySelector('#get').play()
+            }, 100)
+
+            waitvideo = setTimeout(() => {
+                document.querySelector('#bac2').animate([{
+                    display: 'block',
+                    opacity: 0
+                }, {
+                    display: 'block',
+                    opacity: 1
+                }], {
+                    duration: 100,
+                    ease: 'ease-out',
+                    fill: 'forwards'
+                })
+
+                // showpeo(item, [], [item])
+                showpeo(items.list[0], items.list.slice(1), items.list, true)
+            }, 6300)
+
+        }
+
+        $('#wish').click(() => {wish(1)})
+        $('#wish10').click(() => {wish(10)})
+
+        $('#video').click(() => {
+            $('img[onclick="tiaovideo()"]').css('display', 'block')
+            $('img[onclick="tiaovideo()"]')[0].animate([{
+                opacity: 0
+            }, {
+                opacity: 1
+            }], {
+                duration: 150,
+                ease: 'ease-in',
+                fill: 'forwards'
+            })
+        })
+
+        t = ''
+        for (let i = 0; i < 26; i++) {
+            t += `<img src="./static/xiu.png" style="width: ${parseInt(Math.random() * 4 + 2)}vw;transform: rotate(${i * 13.84}deg);" id="x${i + 1}" class="xiu">`
+        }
+        $('#bac3').html(t)
+    </script>
+    <script>
+        // 艾梅莉埃@5 卡齐娜? 基尼奇? 玛拉妮?
+
+        const peo4 = [
+            {
+                'type': 'peo',
+                'name': '瑶瑶',
+                'eng': 'yaoyao',
+                'el': 'cao',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '安柏',
+                'eng': 'anbo',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '芭芭拉',
+                'eng': 'babala',
+                'el': 'shui',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '班尼特',
+                'eng': 'bannite',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '菲谢尔',
+                'eng': 'feixieer',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '凯亚',
+                'eng': 'kaiya',
+                'el': 'bing',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '丽莎',
+                'eng': 'lisha',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '诺艾尔',
+                'eng': 'nuoaier',
+                'el': 'yan',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '雷泽',
+                'eng': 'leize',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '砂糖',
+                'eng': 'shatang',
+                'el': 'feng',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '迪奥娜',
+                'eng': 'diaona',
+                'el': 'bing',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '罗莎莉亚',
+                'eng': 'luoshaliya',
+                'el': 'bing',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '米卡',
+                'eng': 'mika',
+                'el': 'bing',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '北斗',
+                'eng': 'beidou',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '重云',
+                'eng': 'chongyun',
+                'el': 'bing',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '凝光',
+                'eng': 'ningguang',
+                'el': 'yan',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '香菱',
+                'eng': 'xiangling',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '行秋',
+                'eng': 'xingqiu',
+                'el': 'shui',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '辛焱',
+                'eng': 'xinyan',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '烟绯',
+                'eng': 'yanfei',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '云堇',
+                'eng': 'yunjin',
+                'el': 'yan',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '嘉明',
+                'eng': 'jiaming',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '久岐忍',
+                'eng': 'jiuqiren',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '九条裟罗',
+                'eng': 'jiutiaoshaluo',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '五郎',
+                'eng': 'wulang',
+                'el': 'yan',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '托马',
+                'eng': 'tuoma',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '早柚',
+                'eng': 'zaoyou',
+                'el': 'feng',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '绮良良',
+                'eng': 'qiliangliang',
+                'el': 'cao',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '鹿野院平藏',
+                'eng': 'luyeyuanpingcang',
+                'el': 'feng',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '卡维',
+                'eng': 'kawei',
+                'el': 'cao',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '坎蒂丝',
+                'eng': 'kandisi',
+                'el': 'shui',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '多莉',
+                'eng': 'duoli',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '柯莱',
+                'eng': 'kelai',
+                'el': 'cao',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '珐露珊',
+                'eng': 'falushan',
+                'el': 'feng',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '莱依拉',
+                'eng': 'laiyila',
+                'el': 'bing',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '赛索斯',
+                'eng': 'saisuosi',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '夏沃蕾',
+                'eng': 'xiawolei',
+                'el': 'huo',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '夏洛蒂',
+                'eng': 'xialuodi',
+                'el': 'bing',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '琳妮特',
+                'eng': 'linnite',
+                'el': 'feng',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '菲米尼',
+                'eng': 'feimini',
+                'el': 'bing',
+                'star': 4
+            }
+        ]
+
+        const peo5 = [
+            {
+                'type': 'peo',
+                'name': '刻晴',
+                'eng': 'keqing',
+                'el': 'lei',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '迪卢克',
+                'eng': 'diluke',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '优菈',
+                'eng': 'youla',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '阿贝多',
+                'eng': 'abeiduo',
+                'el': 'yan',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '可莉',
+                'eng': 'keli',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '温迪',
+                'eng': 'wendi',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '莫娜',
+                'eng': 'mona',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '琴',
+                'eng': 'qin',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '七七',
+                'eng': 'qiqi',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '钟离',
+                'eng': 'zhongli',
+                'el': 'yan',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '甘雨',
+                'eng': 'ganyu',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '魈',
+                'eng': 'xiao',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '胡桃',
+                'eng': 'hutao',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '申鹤',
+                'eng': 'shenhe',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '夜兰',
+                'eng': 'yelan',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '白术',
+                'eng': 'baizhu',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '闲云',
+                'eng': 'xianyun',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '埃洛伊',
+                'eng': 'ailuoyi',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '八重神子',
+                'eng': 'bazhongshenzi',
+                'el': 'lei',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '千织',
+                'eng': 'qianzhi',
+                'el': 'yan',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '妮露',
+                'eng': 'nilu',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '宵宫',
+                'eng': 'xiaogong',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '提纳里',
+                'eng': 'tinali',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '枫原万叶',
+                'eng': 'fengyuanwanye',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '流浪者',
+                'eng': 'liulangzhe',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '珊瑚宫心海',
+                'eng': 'shanhugongxinhai',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '神里绫人',
+                'eng': 'shenlilingren',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '神里绫华',
+                'eng': 'shenlilinghua',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '纳西妲',
+                'eng': 'naxida',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '艾尔海森',
+                'eng': 'aierhaisen',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '荒泷一斗',
+                'eng': 'huanglongyidou',
+                'el': 'yan',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '赛诺',
+                'eng': 'sainuo',
+                'el': 'lei',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '迪希雅',
+                'eng': 'dixiya',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '雷电将军',
+                'eng': 'leidianjiangjun',
+                'el': 'lei',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '克洛琳德',
+                'eng': 'keluolinde',
+                'el': 'lei',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '娜维娅',
+                'eng': 'naweiya',
+                'el': 'yan',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '林尼',
+                'eng': 'linni',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '芙宁娜',
+                'eng': 'funingna',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '莱欧斯利',
+                'eng': 'laiousili',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '达达利亚',
+                'eng': 'dadaliya',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '那维莱特',
+                'eng': 'naweilaite',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '阿蕾奇诺',
+                'eng': 'aleiqinuo',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '希格雯',
+                'eng': 'xigewen',
+                'el': 'shui',
+                'star': 5
+            }
+        ]
+
+        const kni34 = [
+        {
+                'type': 'kni',     
+                'name': '以理服人',
+                'eng': 'yilifuren',
+                'el': 'dajian',    
+                'star': 3
+            },
+            {
+                'type': 'kni',  
+                'name': '信使', 
+                'eng': 'xinshi',
+                'el': 'gong',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '冷刃',
+                'eng': 'lenren',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '反曲弓',
+                'eng': 'fanqugong',
+                'el': 'gong',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '吃虎鱼刀',
+                'eng': 'chihuyudao',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '异世界行记',
+                'eng': 'yishijiexingji',
+                'el': 'faqi',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '弹弓',
+                'eng': 'dangong',
+                'el': 'gong',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '暗铁剑',
+                'eng': 'antiejian',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '沐浴龙血的剑',
+                'eng': 'muyulongxiedejian',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '甲级宝珏',
+                'eng': 'jiajibaojue',
+                'el': 'faqi',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '白缨枪',
+                'eng': 'baiyingqiang',
+                'el': 'changbing',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '白铁大剑',
+                'eng': 'baitiedajian',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '神射手之誓',
+                'eng': 'shensheshouzhishi',
+                'el': 'gong',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '翡玉法球',
+                'eng': 'feiyufaqiu',
+                'el': 'faqi',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '讨龙英杰谭',
+                'eng': 'taolongyingjietan',
+                'el': 'faqi',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '钺矛',
+                'eng': 'yuemao',
+                'el': 'changbing',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '铁影阔剑',
+                'eng': 'tieyingkuojian',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '飞天大御剑',
+                'eng': 'feitiandayujian',
+                'el': 'dajian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '飞天御剑',
+                'eng': 'feitianyujian',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '魔导绪论',
+                'eng': 'modaoxulun',
+                'el': 'faqi',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '鸦羽弓',
+                'eng': 'yayugong',
+                'el': 'gong',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '黎明神剑',
+                'eng': 'limingshenjian',
+                'el': 'jian',
+                'star': 3
+            },
+            {
+                'type': 'kni',
+                'name': '黑缨枪',
+                'eng': 'heiyingqiang',
+                'el': 'changbing',
+                'star': 3
+            },
+
+            {
+                'type': 'kni',
+                'name': '「渔获」',
+                'eng': 'yuhuo',
+                'el': 'changbing',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '万国诸海图谱',
+                'eng': 'wanguozhuhaitupu',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '决斗之枪',
+                'eng': 'juedouzhiqiang',
+                'el': 'changbing',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '匣里日月',
+                'eng': 'xialiriyue',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '匣里龙吟',
+                'eng': 'xialilongyin',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '千岩古剑',
+                'eng': 'qianyangujian',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '喜多院十文字',
+                'eng': 'xiduoyuanshiwenzi',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '嘟嘟可故事集',
+                'eng': 'dudukegushiji',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '天目影打刀',
+                'eng': 'tianmuyingdadao',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '宗室长剑',
+                'eng': 'zongshichangjian',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '幽夜华尔兹',
+                'eng': 'youyehuaerzi',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '恶王丸',
+                'eng': 'ewangwan',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '断浪长鳍',
+                'eng': 'duanlangzhangqi',
+                'el': 'changbing',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '昭心',
+                'eng': 'zhaoxin',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '暗巷猎手',
+                'eng': 'anxianglieshou',
+                'el': '',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '暗巷的酒与诗',
+                'eng': 'anxiangdejiuyushi',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '暗巷闪光',
+                'eng': 'anxiangshanguang',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '曚云之月',
+                'eng': 'mengyunzhiyue',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '桂木斩长正',
+                'eng': 'guimuzhanzhangzheng',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '流浪乐章',
+                'eng': 'liulangyuezhang',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '灰河渡手',
+                'eng': 'huihedushou',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '白影剑',
+                'eng': 'baiyingjian',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '破魔之弓',
+                'eng': 'pomozhigong',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '祭礼剑',
+                'eng': 'jilijian',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '祭礼大剑',
+                'eng': 'jilidajian',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '祭礼弓',
+                'eng': 'jiligong',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '竭泽',
+                'eng': 'jieze',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '笛剑',
+                'eng': 'dijian',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '绝弦',
+                'eng': 'juexian',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '苍翠猎弓',
+                'eng': 'cangcuiliegong',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '落霞',
+                'eng': 'luoxia',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '螭骨剑',
+                'eng': 'chigujian',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '衔珠海皇',
+                'eng': 'xianzhuhaihuang',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '西风剑',
+                'eng': 'xifengjian',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '西风大剑',
+                'eng': 'xifengdajian',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '西风猎弓',
+                'eng': 'xifengliegong',
+                'el': 'gong',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '西风秘典',
+                'eng': 'xifengmidian',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '西风长枪',
+                'eng': 'xifengchangqiang',
+                'el': 'changbing',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '证誓之明瞳',
+                'eng': 'zhengshizhimingtong',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '试作古华',
+                'eng': 'shizuoguhua',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '试作斩岩',
+                'eng': 'shizuozhanyan',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '试作金珀',
+                'eng': 'shizuojinpo',
+                'el': 'faqi',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '辰砂之纺锤',
+                'eng': 'chenshazhifangchui',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '雨裁',
+                'eng': 'yucai',
+                'el': 'dajian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '黑剑',
+                'eng': 'heijian',
+                'el': 'jian',
+                'star': 4
+            },
+            {
+                'type': 'kni',
+                'name': '黑岩斩刀',
+                'eng': 'heiyanzhandao',
+                'el': 'dajian',
+                'star': 4
+            }
+        ]
+
+        const kni5 = [
+            {
+                'type': 'kni',
+                'name': '天空之刃',
+                'eng': 'tiankongzhiren',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '万世流涌大典',
+                'eng': 'wanshiliuyongdadian',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '不灭月华',
+                'eng': 'bumieyuehua',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '冬极白星',
+                'eng': 'dongjibaixing',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '千夜浮梦',
+                'eng': 'qianyefumeng',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '和璞鸢',
+                'eng': 'hepuyuan',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '四风原典',
+                'eng': 'sifengyuandian',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '图莱杜拉的回忆',
+                'eng': 'tulaiduladehuiyi',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '圣显之钥',
+                'eng': 'shengxianzhiyao',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '天空之傲',
+                'eng': 'tiankongzhiao',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '天空之卷',
+                'eng': 'tiankongzhijuan',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '天空之翼',
+                'eng': 'tiankongzhiyi',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '天空之脊',
+                'eng': 'tiankongzhiji',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '尘世之锁',
+                'eng': 'chenshizhisuo',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '息灾',
+                'eng': 'xizai',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '护摩之杖',
+                'eng': 'humozhizhang',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '斫峰之刃',
+                'eng': 'zhuofengzhiren',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '无工之剑',
+                'eng': 'wugongzhijian',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '最初的大魔术',
+                'eng': 'zuichudedamoshu',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '松籁响起之时',
+                'eng': 'songlaixiangqizhishi',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '波乱月白经津',
+                'eng': 'boluanyuebaijingjin',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '狼的末路',
+                'eng': 'langdemolu',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '猎人之径',
+                'eng': 'lierenzhijing',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '白雨心弦',
+                'eng': 'baiyuxinxian',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '碧落之珑',
+                'eng': 'biluozhilong',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '磐岩结绿',
+                'eng': 'panyanjielv',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '终末嗟叹之诗',
+                'eng': 'zhongmojietanzhishi',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '苇海信标',
+                'eng': 'weihaixinbiao',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '苍古自由之誓',
+                'eng': 'cangguziyouzhishi',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '若水',
+                'eng': 'ruoshui',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '薙草之稻光',
+                'eng': 'ticaozhidaoguang',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '裁叶萃光',
+                'eng': 'caiyecuiguang',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '裁断',
+                'eng': 'caiduan',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '贯虹之槊',
+                'eng': 'guanhongzhishuo',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '赤月之形',
+                'eng': 'chiyuezhixing',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '赤沙之杖',
+                'eng': 'chishazhizhang',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '赤角石溃杵',
+                'eng': 'chijiaoshikuichu',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '赦罪',
+                'eng': 'shezui',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '阿莫斯之弓',
+                'eng': 'amosizhigong',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '雾切之回光',
+                'eng': 'wuqiezhihuiguang',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '静水流涌之辉',
+                'eng': 'jingshuiliuyongzhihui',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '风鹰剑',
+                'eng': 'fengyingjian',
+                'el': 'jian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '飞雷之弦振',
+                'eng': 'feileizhixianzhen',
+                'el': 'gong',
+                'star': 5
+            }
+        ]
+
+        var list = [].concat(peo4).concat(peo5).concat(kni34).concat(kni5)
+
+        localStorage.getItem('history') == undefined ? localStorage.setItem('history', '[]') : ''
+        const history = JSON.parse(localStorage.getItem('history'))
+
+        localStorage.getItem('ding') == undefined ? localStorage.setItem('ding', JSON.stringify({'eng': '', 'value': 0})) : ''
+        const ding = JSON.parse(localStorage.getItem('ding'))
+
+        if (ding.eng == '') {
+            $('#dingtext').html('奔行定轨')
+        } else {
+            $('#dingtext').html(`<span style="font-size: 1vw;color: rgb(255, 154, 0);">${ding.value}</span>/1`)
+        }
+    </script>
+</body>
+
+</html>
