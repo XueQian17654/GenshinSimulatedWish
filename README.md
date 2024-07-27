@@ -33,7 +33,7 @@
 - 此网页非盈利。
 
 ## 在不下载的前提下体验
-- [https://xueqian17654.github.io/GenshinSimulatedWish](https://xueqian17654.github.io/GenshinSimulatedWish, 'GenshinSimulatedWish')
+- [https://xueqian17654.github.io/GenshinSimulatedWish](https://xueqian17654.github.io/GenshinSimulatedWish 'GenshinSimulatedWish')
 
 ## 技术宅改变世界
 
