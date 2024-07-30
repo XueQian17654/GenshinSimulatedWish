@@ -13,14 +13,14 @@
  - 10 连则必出 4 星以上物品
  - 每 80 次必出一5星
  - 保底机制不影响概率
+ - 抽卡次数不影响概率
  - 命定值为 1 时，下一次 5 星必为定轨物品
 
 ## 素材
 ### 物品（武器+角色立绘与抽卡）
 - [GenShin Wiki](https://genshin-impact.fandom.com/wiki "GenShin Wiki")
 ### 媒体
-- 游戏截取（录制）
-- GitHub
+- 100% 游戏截取（录制）
 
 ## 关于代码
 - “0” 维护成本
@@ -33,6 +33,7 @@
 - 此网页非盈利。
 
 ## 在不下载的前提下体验
+### 代价是加载时间非常长...
 - [https://xueqian17654.github.io/GenshinSimulatedWish](https://xueqian17654.github.io/GenshinSimulatedWish 'GenshinSimulatedWish')
 
 ## 技术宅改变世界

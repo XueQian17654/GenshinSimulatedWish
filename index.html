@@ -501,7 +501,12 @@
     <audio id="adingc"><source src="./static/dingc.wav"></audio>
 
     <script>
-        color = [['#5b8dd6', '#648ccc', '#3164b4', '#5989bc', '#2b3a4b'], ['#835bd6', '#b164cc', '#4f3e98', '#8059bc', '#2b2e4b'], ['#d6a95b', '#cca564', '#b46f31', '#bca359', '#4b462b']]
+        // color = [['#5b8dd6', '#648ccc', '#3164b4', '#5989bc', '#2b3a4b'], ['#835bd6', '#b164cc', '#4f3e98', '#8059bc', '#2b2e4b'], ['#d6a95b', '#cca564', '#b46f31', '#bca359', '#4b462b']]
+        color4 = [
+            'radial-gradient(circle, #3a5cade8 calc(var(--p) / 20), #3a5cadde calc(var(--p) / 5), #3a5cadf0 calc(var(--p) / 3.33), #3a5cad66 calc(var(--p) / 2), #3a5cad33 calc(var(--p) / 1.5), #000b 100%)',
+            'radial-gradient(circle, #7e50b8e8 calc(var(--p) / 20), #7e50b8de calc(var(--p) / 5), #b359fff0 calc(var(--p) / 3.33), #b359ffde calc(var(--p) / 2), #6a3399c9 calc(var(--p) / 1.5), #000b 100%)',
+            'radial-gradient(circle, #0000 calc(var(--p) / 20), #ffdb52bb calc(var(--p) / 5), #ffdb52bb calc(var(--p) / 3.33), #ff9b35bb calc(var(--p) / 1.8), #ff9b35bb calc(var(--p) / 1.5), #000b 100%)'
+        ]
         ani = []
 
         function getRandomItems(count) {
@@ -571,7 +576,7 @@
                 highestStar = 5
             }
 
-            // li = [list.filter(item => item.eng.search('funingna') != -1)[0]];
+            // li = [list.filter(item => item.eng.search('xigewen') != -1)[0]];
             // return {'list': li, 'highestStar': li[0].star};
 
             return {
@@ -633,9 +638,10 @@
             }
 
             setTimeout(() => {
-                for (let i = 0; i < 5; i++) {
-                    document.body.style.setProperty(`--c${i + 1}`, color[item.star - 3][i])
-                }
+                // for (let i = 0; i < 5; i++) {
+                //     document.body.style.setProperty(`--c${i + 1}`, color[item.star - 3][i])
+                // }
+                $('#bac3').css('background', color4[item.star - 3])
 
                 $('#people').css('display', 'flex')
                 document.querySelector('#new' + (fir ? '0' : '')).play()
@@ -911,7 +917,7 @@
             localStorage.setItem('history', JSON.stringify(history.concat(eng)))
             localStorage.setItem('ding', JSON.stringify(ding))
 
-            document.querySelector('video').childNodes[1].src = `./static/d/${num == 10 ? 't' : 'o'}${items.highestStar}.mp4`
+            document.querySelector('video').childNodes[1].src = `./static/286932797/${num == 10 ? 't' : 'o'}${items.highestStar}.mp4`
             $('video').load()
 
             document.querySelector('#video').style.display = 'block'
@@ -945,7 +951,7 @@
 
                 // showpeo(item, [], [item])
                 showpeo(items.list[0], items.list.slice(1), items.list, true)
-            }, 6300)
+            }, 5999)
 
         }
 
@@ -972,7 +978,7 @@
         $('#bac3').html(t)
     </script>
     <script>
-        // 艾梅莉埃@5 卡齐娜? 基尼奇? 玛拉妮?
+        // 艾梅莉埃@5 卡齐娜@? 基尼奇@? 玛拉妮@?
 
         const peo4 = [
             {
