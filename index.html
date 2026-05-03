@@ -6,7 +6,7 @@
     <style>
         @font-face {
             font-family: 'HYWenHei';
-            src: url('./static/HYWenHei-85J.ttf') format('truetype');
+            src: url('./static/HYWenHei-85W.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
@@ -16,8 +16,10 @@
         * {
             cursor: url(./static/cur.png), all-scroll;
             font-family: 'HYWenHei';
-            font-size: 2vw;
-            
+            font-size: 1.5vw;
+
+            transition: transform 0.2s;
+
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -26,11 +28,16 @@
 
         body {
             --p: 100%;
+
             --c1: #fff;
             --c2: #fff;
             --c3: #fff;
             --c4: #fff;
             --c5: #fff;
+
+            --xiucol: #d7baff;
+
+            --xiumask: url(./static/xiu.png);
         }
 
         #video {
@@ -44,14 +51,15 @@
             display: none;
         }
 
-        #people, #allinall {
+        #people,
+        #allinall {
             position: absolute;
             display: none;
             width: 100vw;
             height: 56.25vw;
             justify-content: center;
             align-items: center;
-            overflow:hidden;
+            overflow: hidden;
         }
 
         #bac3 {
@@ -63,7 +71,7 @@
             align-items: center;
             justify-content: center;
             background-image: radial-gradient(circle, var(--c1) calc(var(--p) / 20), var(--c2) calc(var(--p) / 5), var(--c3) calc(var(--p) / 3.33), var(--c4) calc(var(--p) / 1.42), var(--c5) var(--p), #0000 100%);
-            overflow:hidden;
+            overflow: hidden;
         }
 
         .xiu {
@@ -86,7 +94,7 @@
         }
 
         button:hover {
-            filter: drop-shadow(2px 2px 0px white) drop-shadow(-1px -1px 0px white) drop-shadow(-1px 1px 0px white) drop-shadow(1px -1px 0px white);
+            filter: drop-shadow(0.2vw 0.2vw 0 white) drop-shadow(-0.1vw -0.1vw 0 white) drop-shadow(-0.1vw 0.1vw 0 white) drop-shadow(0.1vw -0.1vw 0 white);
         }
 
         button:active {
@@ -100,10 +108,11 @@
         .title {
             background-color: #0005;
             border-radius: 1vw;
-            padding: 1px;
+            padding: 0.1vw;
             font-size: 1.5vw;
             margin-right: 2vw;
-            height: 1.5vw;display: flex;
+            height: 1.5vw;
+            display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
@@ -149,8 +158,7 @@
 
         .anall {
             display: flex;
-            opacity: 0;
-            margin: 1px;
+            margin: 0.1vw;
             width: 7.543vw;
             height: 31.75vw;
             /* border-radius: 3.8vw; */
@@ -162,16 +170,27 @@
             justify-content: flex-end;
             align-items: center;
             flex-direction: column;
-            
+
             /* background-image: url(./static/res/yaoyao2.png), linear-gradient(180deg, #516883 10%, #bec5ab 45%, #bec5ab 55%, #516883 100%);
-            box-shadow: 0px 0px 15px 4px #4290ef; */
+            box-shadow: 0 0 15px 4px #4290ef; */
+        }
+
+        .anallwai {
+            opacity: 0;
+            transform: scale(1);
+            transition: transform 0.1s;
+        }
+
+        .anallwai:hover {
+            transform: scale(1.02);
         }
 
         .starf {
+            font-family: initial;
             font-size: 1.7vw;
             margin-bottom: 3vw;
             color: #ffc627;
-            /* text-shadow: 1px 1px #e4a534, -1px -1px #e4a534, 1px -1px #e4a534, -1px 1px #e4a534; */
+            text-shadow: 0.1vw 0.1vw 1px #e4a534, -0.1vw -0.1vw 1px #e4a534, 0.1vw -0.1vw 1px #e4a534, -0.1vw 0.1vw 1px #e4a534, 0.14vw 0 1px #e4a534, -0.14vw 0 1px #e4a534, 0 -0.14vw 1px #e4a534, 0 0.14vw 1px #e4a534;
         }
 
         .ding {
@@ -190,7 +209,8 @@
             background-color: #0000;
         }
 
-        #copy, #dd {
+        #copy,
+        #dd {
             background-image: url(./static/dingui.png);
             width: 67.37vw;
             height: 40.62vw;
@@ -198,28 +218,41 @@
             background-repeat: no-repeat;
         }
 
-        .choicending, #chosen {
-            /* color: #000; */
+        #duihuan {
+            background-image: url(./static/duihuan.png);
+            width: 46vw;
+            height: 28vw;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .choicending, .juese {
             justify-content: center;
-            align-items: flex-end;
+            align-items: flex-start;
             white-space: nowrap;
-            overflow:hidden;
+            overflow: hidden;
             display: flex;
             float: left;
-            border-radius: 1vw;
-            font-size: 1.3vw;
             margin: 0.5vw;
             width: 6vw;
-            height: 8vw;
-            border-top: #e59d39 0.3vw solid;
-            border-bottom: #e9e5db 0.3vw solid;
-            background-image: linear-gradient(180deg, #e59d39 70%, #e9e5db 0%);
-            box-shadow: 0.1vw 0.1vw 0.5vw 0 #0006;
+            height: 7.3vw;
+            filter: drop-shadow(0.1vw 0.1vw 0.5vw #0006);
+            border-radius: 0.3vw;
+            border: 0.2vw solid #00000000;
+            transition: transform 0.2s;
+        }
+
+        .choicending:hover, .juese:hover {
+            transform: scale(1.1);
+            border: 0.2vw solid rgb(255, 255, 255);
         }
 
         .cling {
-            border-top: rgb(188, 236, 57) 0.3vw solid;
-            border-bottom: rgb(188, 236, 57) 0.3vw solid;
+            border: 0.2vw solid rgb(188, 236, 57);
+        }
+
+        .cling:hover {
+            border: 0.2vw solid rgb(188, 236, 57);
         }
 
         /* .cling::after {
@@ -229,11 +262,109 @@
             text-align: center;
             clip-path: xywh(0 0 100% 100% round 0 15%);
             color: rgb(106, 132, 7);
-            font-size: 12px !important;
-            padding: 2px 4px 0;
+            font-size: 10.2vw !important;
+            padding: 0.2vw 4px 0;
             content: "✔";
             transform: translateX(calc(3vw - 46%)) translateY(calc(-5vw + 40%));
         } */
+
+        .historypage {
+            width: 100vw;
+            height: 56.25vw;
+            position: fixed;
+            align-content: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+
+            margin: 0px;
+            overflow: hidden;
+            transform-origin: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-image: url(./static/background3.png);
+        }
+
+        .historybox {
+            width: 77.7vw;
+            height: 39.3vw;
+            background-image: url(./static/history.png);
+            background-size: contain;
+            background-repeat: no-repeat;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+            padding: 3vw 11vw 5vw 7vw;
+        }
+
+        .historytitle {
+            display: flex;
+            align-items: center;
+            color: #595252;
+            height: 4vw;
+        }
+
+        .historytitle>img {
+            width: 2vw;
+            margin-right: 0.1vw;
+        }
+
+        .historychoice {
+            background-image: url(./static/choiceback.png);
+            width: 100%;
+            height: 3.5vw;
+            background-size: contain;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            background-position: 50%;
+            margin-bottom: 1.5vw;
+        }
+
+        .historychoice>div {
+            width: 33%;
+            text-align: center;
+            color: #595252;
+            height: 100%;
+            position: relative;
+        }
+
+        .historychoice>div>span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -48%);
+        }
+
+        .historychoosed {
+            color: #fff;
+            background-image: url(./static/choices.png) !important;
+            background-repeat: no-repeat;
+            background-size: 99% 99%;
+            background-position: 50%;
+        }
+
+        .historychoosed>span {
+            color: #fff;
+        }
+
+        .historycontent {
+            overflow-x: hidden;
+            overflow-y: auto;
+            height: calc(100% - 9vw);
+        }
+
+        .control {
+            color: #38425c;
+            background-color: #e1ded5;
+            width: 9.5vw;
+            height: 2.5vw;
+            margin-right: 1vw;
+            font-size: 1.3vw;
+            border-radius: 1.25vw;
+        }
     </style>
     <style>
         dialog:-internal-dialog-in-top-layer::backdrop {
@@ -267,17 +398,18 @@
 </head>
 
 <body style="margin: 0; overflow: hidden;">
+    <!-- Define A Filter(unsharpy) -->
     <svg style="display: none;">
         <defs>
             <filter id="unsharpy">
-                <feGaussianBlur  result="blurOut" in="SourceGraphic" stdDeviation="5"/>
-                <feComposite operator="arithmetic" k1="0" k2="2" k3="-0.01" k4="0"
-                in="SourceGraphic" in2="blurOut" />
+                <feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="5" />
+                <feComposite operator="arithmetic" k1="0" k2="2" k3="-0.01" k4="0" in="SourceGraphic" in2="blurOut" />
             </filter>
         </defs>
     </svg>
 
-    <div><!-- Copyright -->
+    <!-- Copyright Page -->
+    <div>
         <dialog id="copy" style="top: calc((56.25vw - 40.62vw - (1em * 2)) / 2);">
             <img src="./static/close2.png" style="position:absolute;width: 2vw;top: 2.5vw;right: 2.5vw;z-index: 520;" onclick="$('#copy')[0].close();$('#adingclose')[0].play()">
             <div style="width: 67.37vw;height: 40.62vw;position: absolute;padding-left: 2vw;display: flex;flex-direction: column;align-items: center;">
@@ -293,63 +425,542 @@
                 </div>
             </div>
         </dialog>
-        <span style="position: absolute;z-index: 1314;color: white;right: 0.25vw;top: 56vw;translate: 0 -100%;font-size: 1vw;text-shadow: 1px 1px 2px black;background-color: #0bf7;border-radius: 1vw;filter: blur(3px);">&nbsp;&nbsp;Copyright (c) 2019 - 2039 XueQian&nbsp;&nbsp;</span>
-        <span style="position: absolute;z-index: 1314;color: white;right: 0.25vw;top: 56vw;translate: 0 -100%;font-size: 1vw;text-shadow: 1px 1px 2px black;background-color: #0bf0;border-radius: 1vw;" onclick="$('#adingopen')[0].play();$('#copy')[0].showModal();">&nbsp;&nbsp;Copyright (c) 2019 - 2039 XueQian&nbsp;&nbsp;</span>
+        <span style="position: absolute;z-index: 1314;color: white;right: 0.25vw;top: 56vw;translate: 0 -100%;font-size: 1vw;text-shadow: 0.1vw 0.1vw 0.2vw black;background-color: #0bf7;border-radius: 1vw;filter: blur(0.3vw);display: none;" id="bb">&nbsp;&nbsp;Copyright (c) 2019 - 2039 XueQian&nbsp;&nbsp;</span>
+        <span style="position: absolute;z-index: 1314;color: white;right: 0.25vw;top: 56vw;translate: 0 -100%;font-size: 1vw;text-shadow: 0.1vw 0.1vw 0.2vw black;background-color: #0bf0;border-radius: 1vw;" onclick="$('#adingopen')[0].play();$('#copy')[0].showModal();">&nbsp;&nbsp;Copyright (c) 2019 - 2039
+            XueQian&nbsp;&nbsp;</span>
     </div>
 
-    <!-- Input -->
+    <!-- Pay -->
     <dialog id="in" style="background-color: white;width: 31.54613vw;height: 31.54613vw;padding: 0;border-radius: 1vw;top: calc((56.25vw - 31.54613vw - (0em * 2)) / 2);">
         <a style="position:absolute;top: 1.5vw;right: 2vw;z-index: 520;color: #a6a6a6;font-size: 1.5vw;" onclick="$('#in')[0].close();">✖</a>
         <div style="width: 100%;height: 40.62vw;position: absolute;display: flex;flex-direction: column;align-items: center;">
-            <p style="color: black;font-size: 1.4vw;margin-top: 2.2vw;transform: scale(0.91);margin-bottom: 0.9vw;">扫码支付</p>
-            <p style="color: #ff6c3b;font-size: 1.6vw;margin: 0;"><span style="font-size: 1.6vw;font-weight: bold;font-family: Arial;">¥</span>&nbsp;648.00</p>
-            <p style="font-size: 1vw;color: #6a6a6a;transform: scale(0.91);margin-top: 1vw;margin-bottom: 1.3vw;">商品：6480 创世结晶</p>
-            <p style="font-size: 1vw;color: #000000;margin-top: 0.3vw;">
-                <span id="zfb" style="font-size: 1vw;padding: 0.5vw;border: 1px solid #d2bb8c;border-radius: 0.5vw;background-color: #fdf9ef;padding-left: 1.2vw;padding-right: 1vw;margin-right: 2vw;"><img src="./static/zhifubao.svg" style="width: 1vw;margin-right: 0.5vw;">支付宝<span style="font-size: 1vw;color: white;background-color: #ff3009;padding: 0.15vw;border-radius: 0.4vw;transform: scale(0.7);display: inline-block;padding-left: 0.5vw;padding-right: 0.5vw;">推荐</span></span>
-                <span id="wx" style="font-size: 1vw;padding: 0.5vw;border: 1px solid #e9e9e9;border-radius: 0.5vw;background-color: white;padding-left: 2vw;padding-right: 2vw;"><img src="./static/weixin.svg" style="width: 1vw;margin-right: 0.5vw;">微信支付</span>
+            <p style="color: black;font-size: 1.4vw;margin-top: 2.2vw;transform: scale(0.91);margin-bottom: 0.9vw;">扫码支付
             </p>
-            <img id="qr" src="./static/inz.jpg" style="width: 9vw;padding: 0.6vw;border: 2px solid #e9e9e9;border-radius: 1vw;margin-top: 0.5vw;">
-            <p id="paytip" style="font-size: 1.5vw;transform: scale(0.5);margin: 0;color: #8f8f8f;margin-top: 0.3vw;">支付宝扫码</p>
+            <p style="color: #ff6c3b;font-size: 1.6vw;margin: 0;"><span style="font-size: 1.6vw;font-weight: bold;font-family: Arial;">¥</span>&nbsp;648.00</p>
+            <p style="font-size: 1vw;color: #6a6a6a;transform: scale(0.91);margin-top: 1vw;margin-bottom: 1.3vw;">
+                商品：6480 创世结晶</p>
+            <p style="font-size: 1vw;color: #000000;margin-top: 0.3vw;">
+                <span id="zfb" style="font-size: 1vw;padding: 0.5vw;border: 0.1vw solid #d2bb8c;border-radius: 0.5vw;background-color: #fdf9ef;padding-left: 1.2vw;padding-right: 1vw;margin-right: 2vw;"><img src="./static/zhifubao.svg" style="width: 1vw;margin-right: 0.5vw;">支付宝<span style="font-size: 1vw;color: white;background-color: #ff3009;padding: 0.15vw;border-radius: 0.4vw;transform: scale(0.7);display: inline-block;padding-left: 0.5vw;padding-right: 0.5vw;">推荐</span></span>
+                <span id="wx" style="font-size: 1vw;padding: 0.5vw;border: 0.1vw solid #e9e9e9;border-radius: 0.5vw;background-color: white;padding-left: 2vw;padding-right: 2vw;"><img src="./static/weixin.svg" style="width: 1vw;margin-right: 0.5vw;">微信支付</span>
+            </p>
+            <img id="qr" src="./static/inz.jpg" style="width: 9vw;padding: 0.6vw;border: 0.2vw solid #e9e9e9;border-radius: 1vw;margin-top: 0.5vw;">
+            <p id="paytip" style="font-size: 1.5vw;transform: scale(0.5);margin: 0;color: #8f8f8f;margin-top: 0.3vw;">
+                支付宝扫码</p>
             <script>
                 $('#zfb').click(() => {
-                    $('#qr').attr('src','./static/inz.jpg');
-                    $('#zfb').css({'background-color': '#fdf9ef','border': '1px solid #d2bb8c'});
-                    $('#wx').css({'background-color': 'white','border': '1px solid #e9e9e9'});
+                    $('#qr').attr('src', './static/inz.jpg');
+                    $('#zfb').css({ 'background-color': '#fdf9ef', 'border': '0.1vw solid #d2bb8c' });
+                    $('#wx').css({ 'background-color': 'white', 'border': '0.1vw solid #e9e9e9' });
                     $('#paytip').text('支付宝扫码');
                 });
                 $('#wx').click(() => {
-                    $('#qr').attr('src','./static/inw.jpg');
-                    $('#zfb').css({'background-color': 'white','border': '1px solid #e9e9e9'});
-                    $('#wx').css({'background-color': '#fdf9ef','border': '1px solid #d2bb8c'});
+                    $('#qr').attr('src', './static/inw.jpg');
+                    $('#zfb').css({ 'background-color': 'white', 'border': '0.1vw solid #e9e9e9' });
+                    $('#wx').css({ 'background-color': '#fdf9ef', 'border': '0.1vw solid #d2bb8c' });
                     $('#paytip').text('微信扫码');
+                });
+                $('#qr').click(() => {
+                    yuanshi += 6480 * 1.5;
+                    $('#yuanshi').text(yuanshi);
+                    localStorage.setItem('yuanshi', yuanshi);
+                    $('#in')[0].close();
                 });
             </script>
         </div>
     </dialog>
 
+    <!-- Main Background -->
     <div style="position: absolute;"><img src="./static/background.png" style="width: 100vw;"></div>
+
+    <!-- Main UI -->
     <div id="btnd">
         <div style="position: absolute;top: 1.5vw;left: 3vw;display: flex;align-items: center;">
             <img src="./static/icon.png" style="width: 3vw;height: 3vw;">
-            <a style="font-size: 1.5vw;color: #fff;text-shadow: 1px 1px 2px black;">&nbsp;&nbsp;&nbsp;&nbsp;祈愿</a>
+            <a style="font-size: 1.5vw;color: #fff;text-shadow: 0.1vw 0.1vw 0.2vw black;">&nbsp;&nbsp;&nbsp;&nbsp;祈愿</a>
         </div>
         <img src="./static/title.png" style="position: absolute;width: 10vw;top: 0;" onclick="$('#tuang')[0].play()">
         <div style="position: absolute;top: 1.5vw;right: 3vw;display: inline-flex;align-items: center;">
             <div class="title">
                 <img src="./static/yuanshi.png" style="height: 1.5vw;width: 1.5vw;margin-right: 0.5vw;">
-                0
+                <span id="yuanshi"></span>
                 <span class="add" onclick="$('#in')[0].showModal();">
-                    <svg style="width: 0.7vw;" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M12 5.625V6.375H6.375V12H5.625V6.375H0V5.625H5.625V0H6.375V5.625H12Z"></path></svg>
+                    <svg style="width: 0.7vw;" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5.625V6.375H6.375V12H5.625V6.375H0V5.625H5.625V0H6.375V5.625H12Z"></path>
+                    </svg>
                 </span>
             </div>
-            <div class="title" style="padding-right: 1vw;">
+            <div class="title" style="padding-right: 1vw;" onclick="duihuan()">
                 <img src="./static/xiangyu.png" style="height: 1.5vw;width: 1.5vw;margin-right: 0.5vw;">
-                ∞
+                <span id="lanqiu"></span>
             </div>
-            <img src="./static/close.png" style="width: 3vw;">  
+            <script>
+                function duihuan() {
+                    add = parseInt(yuanshi / 160)
+                    lanqiu = lanqiu + add
+                    yuanshi = yuanshi - add * 160
+                    $('#lanqiu').text(lanqiu)
+                    $('#yuanshi').text(yuanshi)
+                    localStorage.setItem('lanqiu', lanqiu)
+                    localStorage.setItem('yuanshi', yuanshi)
+
+                    if (lanqiu < 1) {
+                        $('img[src="./static/po.png"]').attr('src', './static/por.png')
+                    } else {
+                        $('img[src="./static/por.png"]').attr('src', './static/po.png')
+                    }
+                    if (lanqiu < 10) {
+                        $('img[src="./static/pt.png"]').attr('src', './static/ptr.png')
+                    } else {
+                        $('img[src="./static/ptr.png"]').attr('src', './static/pt.png')
+                    }
+                    return
+                }
+            </script>
+            <img src="./static/close.png" style="width: 3vw;">
             <!-- onclick="if (document.fullscreenElement === null) {$('body')[0].requestFullscreen();} else {document.exitFullscreen();}" -->
         </div>
-        <img src="./static/changzhu.png" style="width: 68vw;position: absolute;translate: 0 -2.8vw;"><!---->
+
+        <!-- <img src="./static/changzhu.png" style="width: 68vw;position: absolute;translate: 0 -2.8vw;"> -->
+
+        <!-- 封面制作 -->
+        <img src="./static/wishback.png" style="width: 67.42vw;position: absolute;translate: 0.3vw 0vw;">
+        <img id="wishbackel" src="./static/wishbackel.png" style="width: 67.68vw;position: absolute;translate: 0.23vw -0.29vw;border-radius: 0 0.4vw 0.4vw 0;filter: saturate(0) brightness(1.5);">
+
+        <div style="width: 100vw;height: 56.25vw;display: flex;justify-content: center;align-items: center;clip-path: inset(10.6875vw 16.02vw 10.63125vw 16.64vw round 0.4vw 0.4vw 0.4vw 0.4vw);-webkit-mask-image: linear-gradient(to left, #000000 70vw, hsl(0deg 0% 0% / 10%) 80vw);mask-image: linear-gradient(to left, #000000 70vw, hsl(0deg 0% 0% / 10%) 80vw);">
+            <img id="ding5" src="" style="width: 106.7vw;position: absolute;translate: 1.4vw 4.13vw;">
+            <img id="ding41" src="" style="width: 76vw;position: absolute;translate: 26.4vw -3.8vw;">
+            <img id="ding42" src="" style="width: 74.5vw;position: absolute;translate: 32vw 0.35vw;">
+            <img id="ding43" src="" style="width: 90.5vw;position: absolute;translate: 24.86vw 11.79vw;">
+        </div>
+
+        <a style="position: absolute;font-size: 4vw;translate: calc(-30.9vw + 50%) -10.7vw;-webkit-text-stroke: 0.02vw white;">
+            <span id="banner1" style="font-size: inherit;color: #cc9047;"></span><span id="banner2" style="font-size: inherit;color: #565656;"></span>
+        </a>
+        <div id="nameback" style="position: absolute;width: 13.4vw;height: 3.3vw;background-color: rgb(0 0 0 / 70%);translate: calc(3vw + 50%) 9.6vw;"></div>
+        <div id="covertitle" style="position: absolute;padding-left: 0.6vw;padding-right: 0.6vw;translate: calc(4.9vw + 50%) 12.1vw;background-color: #38425c;color: #d3bc8e;font-size: 1.1vw;display: flex;justify-content: center;align-items: center;"></div>
+        <div style="position: absolute;translate: 3vw 7.8vw;box-shadow: 0 0 20px 13px black;"></div>
+        <img id="coverele" src="" style="width: 4.5vw;position: absolute;translate: 3vw 7.8vw;filter: brightness(1.1);">
+        <a id="covername" style="position: absolute;translate: calc(5.55vw + 50%) 7.8vw;color: white;font-size: 3.21vw;text-shadow: 0 0 3.5px black;"></a>
+        <a id="coverstar" class="starf" style="position: absolute;text-shadow: none;font-size: 1.65vw;filter: blur(0.3px);translate: 8.7vw 11.8vw;"></a>
+
+        <img id="wishforeel" src="./static/wishbackel.png" style="width: 67.68vw;position: absolute;translate: 0.23vw -0.29vw;border-radius: 0px 0.4vw 0.4vw 0px;filter: hue-rotate(202deg) saturate(0.6) brightness(1.4);-webkit-mask-image: linear-gradient(to right, #000000 20vw, #00000000 20vw);mask-image: linear-gradient(to right, #000000 20vw, #00000000 20vw);">
+
+        <script>
+            const ele_color = {
+                'yan': '#cc9047',
+                'feng': '#359697',
+                'cao': '#66ab1a',
+                'bing': '#34a8cd',
+                'huo': '#ec4823',
+                'shui': '#498fcb',
+                'lei': '#6958c2'
+            }
+            const backcolor = {
+                'feng': 'hue-rotate(180deg) saturate(0.4) brightness(1.45)',
+                'lei': 'hue-rotate(265deg) saturate(0.3) brightness(1.5)',
+                'yan': 'hue-rotate(59deg) saturate(0.5) brightness(2)',
+                'cao': 'hue-rotate(82deg) saturate(0.4) brightness(1.85)',
+                'bing': 'hue-rotate(188deg) saturate(0.4) brightness(1.9)',
+                'huo': 'hue-rotate(23deg) saturate(0.4) brightness(1.6)',
+                'shui': 'hue-rotate(202deg) saturate(0.45) brightness(1.43)',
+            }
+
+            const allname = [
+                {
+                    "name": "尼可",
+                    "banner": ["", "？？？"],
+                    "title": "？？？"
+                },
+                {
+                    "name": "洛恩",
+                    "banner": ["", "？？？"],
+                    "title": "？？？"
+                },
+                
+                {
+                    "name": "埃洛伊",
+                    "banner": ["", "？？？"],
+                    "title": "「异界的救世主」"
+                },
+                {
+                    "name": "阿贝多",
+                    "banner": ["深秘", "之息"],
+                    "title": "白垩之子"
+                },
+                {
+                    "name": "阿蕾奇诺",
+                    "banner": ["炉边", "烬影"],
+                    "title": "孤暝厄月"
+                },
+                {
+                    "name": "艾尔海森",
+                    "banner": ["敕诫", "枢谋"],
+                    "title": "诲韬诤言"
+                },
+                {
+                    "name": "艾梅莉埃",
+                    "banner": ["凝露", "轻芳"],
+                    "title": "千缕之踪"
+                },
+                {
+                    "name": "八重神子",
+                    "banner": ["华紫", "樱绯"],
+                    "title": "浮世笑百姿"
+                },
+                {
+                    "name": "白术",
+                    "banner": ["心珠", "循琅"],
+                    "title": "遵生合和"
+                },
+                {
+                    "name": "达达利亚",
+                    "banner": ["暂别", "冬都"],
+                    "title": "「公子」"
+                },
+                {
+                    "name": "迪希雅",
+                    "banner": ["烈阳", "烁金"],
+                    "title": "炽鬃之狮"
+                },
+                {
+                    "name": "枫原万叶",
+                    "banner": ["叶落", "风随"],
+                    "title": "红叶逐荒波"
+                },
+                {
+                    "name": "芙宁娜",
+                    "banner": ["众水", "的颂诗"],
+                    "title": "不休独舞"
+                },
+                {
+                    "name": "甘雨",
+                    "banner": ["浮生", "孰来"],
+                    "title": "循循守月"
+                },
+                {
+                    "name": "胡桃",
+                    "banner": ["赤团", "开时"],
+                    "title": "雪霁梅香"
+                },
+                {
+                    "name": "荒泷一斗",
+                    "banner": ["鬼门", "斗宴"],
+                    "title": "花坂豪快"
+                },
+                {
+                    "name": "基尼奇",
+                    "banner": ["巡火", "猎秘"],
+                    "title": "回火之狩"
+                },
+                {
+                    "name": "可莉",
+                    "banner": ["闪焰", "的驻足"],
+                    "title": "逃跑的太阳"
+                },
+                {
+                    "name": "克洛琳德",
+                    "banner": ["流霆", "贯夜"],
+                    "title": "秉烛狝影"
+                },
+                {
+                    "name": "刻晴",
+                    "banner": ["鱼龙", "灯昼"],
+                    "title": "霆霓快雨"
+                },
+                {
+                    "name": "莱欧斯利",
+                    "banner": ["劫中", "泛滥"],
+                    "title": "寂罪的密使"
+                },
+                {
+                    "name": "雷电将军",
+                    "banner": ["影寂", "天下人"],
+                    "title": "一心净土"
+                },
+                {
+                    "name": "林尼",
+                    "banner": ["光与影", "的戏术"],
+                    "title": "惑光幻戏"
+                },
+                {
+                    "name": "流浪者",
+                    "banner": ["余火", "变相"],
+                    "title": "久世浮倾"
+                },
+                {
+                    "name": "玛拉妮",
+                    "banner": ["鲨鲨", "逐浪游"],
+                    "title": "哗啦啦逐浪客"
+                },
+                {
+                    "name": "玛薇卡",
+                    "banner": ["宿古", "的赫炎"],
+                    "title": "焚夜以炎"
+                },
+                {
+                    "name": "那维莱特",
+                    "banner": ["渊海", "界令"],
+                    "title": "谕告的潮音"
+                },
+                {
+                    "name": "纳西妲",
+                    "banner": ["月草", "的赐慧"],
+                    "title": "白草净华"
+                },
+                {
+                    "name": "娜维娅",
+                    "banner": ["刺玫", "的铭誓"],
+                    "title": "明花蔓舵"
+                },
+                {
+                    "name": "妮露",
+                    "banner": ["翩舞", "歈莲"],
+                    "title": "莲光落舞筵"
+                },
+                {
+                    "name": "恰斯卡",
+                    "banner": ["饮羽", "散红"],
+                    "title": "巡宇翦定"
+                },
+                {
+                    "name": "千织",
+                    "banner": ["千云", "绘羽织"],
+                    "title": "鸣雷的裁锦师"
+                },
+                {
+                    "name": "茜特菈莉",
+                    "banner": ["星边", "夜语"],
+                    "title": "白星黑曜"
+                },
+                {
+                    "name": "赛诺",
+                    "banner": ["雳裁", "冥昭"],
+                    "title": "缄秘的裁遣"
+                },
+                {
+                    "name": "珊瑚宫心海",
+                    "banner": ["浮岳", "虹珠"],
+                    "title": "真珠之智"
+                },
+                {
+                    "name": "申鹤",
+                    "banner": ["出尘", "入世"],
+                    "title": "孤辰茕怀"
+                },
+                {
+                    "name": "神里绫华",
+                    "banner": ["白鹭", "之庭"],
+                    "title": "白鹭霜华"
+                },
+                {
+                    "name": "神里绫人",
+                    "banner": ["苍流", "踏花"],
+                    "title": "磐祭叶守"
+                },
+                {
+                    "name": "提纳里",
+                    "banner": ["巡御", "蘙荟"],
+                    "title": "浅蔚轻行"
+                },
+                {
+                    "name": "温迪",
+                    "banner": ["杯装", "之诗"],
+                    "title": "风色诗人"
+                },
+                {
+                    "name": "希格雯",
+                    "banner": ["柔柔", "海露心"],
+                    "title": "龙女妙变"
+                },
+                {
+                    "name": "希诺宁",
+                    "banner": ["煅火", "的祝赐"],
+                    "title": "焮火铸魂"
+                },
+                {
+                    "name": "闲云",
+                    "banner": ["云府", "鹤行"],
+                    "title": "鸾音鹤信"
+                },
+                {
+                    "name": "宵宫",
+                    "banner": ["焰色", "天河"],
+                    "title": "琉焰华舞"
+                },
+                {
+                    "name": "魈",
+                    "banner": ["烟火", "之邀"],
+                    "title": "护法夜叉"
+                },
+                {
+                    "name": "夜兰",
+                    "banner": ["素霓", "伣天"],
+                    "title": "兰生幽谷"
+                },
+                {
+                    "name": "优菈",
+                    "banner": ["浪涌", "之瞬"],
+                    "title": "浪沫的旋舞"
+                },
+                {
+                    "name": "钟离",
+                    "banner": ["陵薮", "市朝"],
+                    "title": "尘世闲游"
+                },
+                {
+                    "name": "爱可菲",
+                    "banner": ["莓色", "香颂"],
+                    "title": "明绚千韵"
+                },
+                {
+                    "name": "杜林",
+                    "banner": ["白礜", "赤成"],
+                    "title": "「不熄灭的火」"
+                },
+                {
+                    "name": "法尔伽",
+                    "banner": ["北风", "的凯旋歌"],
+                    "title": "北风骑士"
+                },
+                {
+                    "name": "菲林斯",
+                    "banner": ["孤灯", "夜访"],
+                    "title": "诡灯陌影"
+                },
+                {
+                    "name": "哥伦比娅",
+                    "banner": ["伴月", "同眠"],
+                    "title": "空月归乡"
+                },
+                {
+                    "name": "奈芙尔",
+                    "banner": ["赤砂", "的诱言"],
+                    "title": "湮沙的秘闻"
+                },
+                {
+                    "name": "菈乌玛",
+                    "banner": ["苍林", "月祷"],
+                    "title": "永月的祀歌"
+                },
+                {
+                    "name": "莉奈娅",
+                    "banner": ["呀吼吼", "博物志"],
+                    "title": "博闻异旅"
+                },
+                {
+                    "name": "丝柯克",
+                    "banner": ["虚星", "临渡"],
+                    "title": "虚渊暗星"
+                },
+                {
+                    "name": "瓦雷莎",
+                    "banner": ["饫宴", "角戏"],
+                    "title": "悠暇豪劲"
+                },
+                {
+                    "name": "伊涅芙",
+                    "banner": ["聚星", "源动"],
+                    "title": "轰隆雷鸣波"
+                },
+                {
+                    "name": "梦见月瑞希",
+                    "banner": ["浮枕", "朝颜"],
+                    "title": "绮梦缱绻"
+                },
+                {
+                    "name": "兹白",
+                    "banner": ["华黍", "由仪"],
+                    "title": "驹隙隐泉"
+                },
+                {
+                    "name": "莫娜",
+                    "banner": ["", "？？？"],
+                    "title": "星天水镜"
+                },
+                {
+                    "name": "七七",
+                    "banner": ["", "？？？"],
+                    "title": "冻冻回魂夜"
+                },
+                {
+                    "name": "琴",
+                    "banner": ["", "？？？"],
+                    "title": "蒲公英骑士"
+                },
+                {
+                    "name": "迪卢克",
+                    "banner": ["", "？？？"],
+                    "title": "晨曦的暗面"
+                }
+            ]
+
+            function changecover(eng1 = '', eng2 = '', eng3 = '', eng4 = '') {
+                if (eng1 != '') {
+                    var name1 = list.filter(item => item.eng === eng1)[0]
+                    if (name1['type'] == 'peo') {
+                        var banners = allname.filter(item => item.name === name1['name'])[0]
+
+                        $('#wishbackel').css('filter', backcolor[name1['el']])
+                        $('#wishforeel').css('filter', backcolor[name1['el']])
+
+                        $('#ding5').attr('src', './static/res/' + eng1 + '.png')
+                        $('#ding5').css('width', '106.7vw')
+                        $('#banner1').css('color', ele_color[name1['el']])
+                        $('#banner1').html(banners['banner'][0])
+                        $('#banner2').html(banners['banner'][1])
+
+                        $('#nameback').css('width', '' + (3.77 + name1['name'].length * 3.21) + 'vw')
+                        $('#covertitle').html(banners['title'])
+                        $('#covertitle').css('display', 'flex')
+                        $('#coverele').attr('src', './static/' + name1['el'] + '.png')
+                        $('#covername').html(banners['name'])
+                        $('#coverstar').html('★★★★★')
+                    } else {
+                        $('#ding5').attr('src', './static/kni/' + eng1 + '.png')
+                        $('#ding5').css('width', '19vw')
+                        $('#banner1').css('color', '#f17c1a')
+                        $('#banner1').html('神铸')
+                        $('#banner2').html('赋形')
+                        
+                        $('#nameback').css('width', '' + (3.77 + name1['name'].length * 3.21) + 'vw')
+                        $('#covertitle').css('display', 'none')
+                        $('#coverele').attr('src', './static/' + name1['el'] + '.png')
+                        $('#covername').html(name1['name'])
+                        $('#coverstar').html('★★★★★')
+                    }
+                } else {
+                    $('#wishbackel').css('filter', 'saturate(0) brightness(1.5)')
+                    $('#wishforeel').css('filter', 'saturate(0) brightness(1.5)')
+
+                    $('#ding5').attr('src', './static/question.png')
+                    $('#banner1').html('')
+                    $('#banner2').html('？？？')
+
+                    $('#nameback').css('width', '13.4vw')
+                    $('#covertitle').html('？？？')
+                    $('#coverele').attr('src', './static/question.png')
+                    $('#covername').html('？？？')
+                    $('#coverstar').html('')
+                }
+
+                const config = [
+                    { val: eng2, selector: '#ding41' },
+                    { val: eng3, selector: '#ding42' },
+                    { val: eng4, selector: '#ding43' }
+                ];
+
+                config.forEach(item => {
+                    if (item.val) {
+                        const person = peo4.find(p => p.eng === item.val);
+                        $(item.selector).attr('src', `./static/res/${item.val}.png`);
+                    } else {
+                        $(item.selector).attr('src', '');
+                    }
+                });
+            }
+        </script>
+
+        <!-- 抽卡按钮 -->
         <div style="height: fit-content;position: absolute;right: 3vw;bottom: 2vw;">
             <button id="wish">
                 <img src="./static/po.png" style="width: 18.2vw;">
@@ -359,15 +970,126 @@
             </button>
         </div>
 
+        <div style="height: fit-content;position: absolute;left: 3vw;bottom: 2vw;">
+            <button class="control" id="xcdh">尘辉兑换</button>
+            <button class="control" id="xq">详情</button>
+            <button class="control" id="lsjl">历史记录</button>
+        </div>
+        <script>
+            $('#xcdh').click(() => {
+                $('#shopsound')[0].play()
+                $('#shoppage')[0].style.display = 'flex'
+                var shopani = $('#shoppage')[0].animate([{
+                    filter: 'brightness(0)',
+                    opacity: 0
+                }, {
+                    filter: 'brightness(0)',
+                    opacity: 0.9
+                }], {
+                    duration: 300,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                })
+                setTimeout(() => {
+                    $('#shoppage')[0].style.filter = 'brightness(1)'
+                    $('#shoppage')[0].style.opacity = '1'
+                    shopani.cancel()
+                }, 500)
+            })
+            $('#xq').click(() => {
+                $('#gelong')[0].play()
+
+                var black = $('html')[0].animate([{
+                    filter: 'brightness(1)'
+                }, {
+                    filter: 'brightness(0.3)'
+                }, {
+                    filter: 'brightness(1)'
+                }], {
+                    duration: 300,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                })
+                setTimeout(() => {
+                    $('#detail')[0].style.display = 'flex'
+                    black.cancel()
+                }, 500)
+            })
+            $('#lsjl').click(() => {
+                $('#gelong')[0].play()
+
+                var black = $('html')[0].animate([{
+                    filter: 'brightness(1)'
+                }, {
+                    filter: 'brightness(0)'
+                }, {
+                    filter: 'brightness(1)'
+                }], {
+                    duration: 300,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                })
+                setTimeout(() => {
+                    $('#historypage')[0].style.display = 'flex'
+                    black.cancel()
+                }, 500)
+            })
+        </script>
+
+        <dialog id="duihuan" style="top: calc((56.25vw - 28vw - (1em * 2)) / 2);">
+            <p id="dtitle" style="position: absolute;text-align: center;width: 46vw;font-size: 2vw;margin-top: 0.5vw;">
+                尘辉兑换</p>
+            <p id="dtext" style="position: absolute;text-align: center;width: 46vw;margin-top: 12vw;font-size: 1.6vw;">
+                缺少<span style="font-size: 1.6vw;color: #f49c00;">10</span>个相遇之缘，是否消耗<span style="font-size: 1.6vw;color: #f49c00;">1600</span>原石购买？</p>
+            <button onclick="$('#duihuan')[0].close();$('#adingclose')[0].play()" style="position: absolute;margin-top: 24vw;margin-left: 2vw;">
+                <img src="./static/cancel.png" style="width: 20vw;">
+            </button>
+
+            <button id="dconfirm" style="position: absolute;margin-top: 24vw;margin-left: 23vw;">
+                <img src="./static/confirm.png" style="width: 20vw;">
+            </button>
+
+            <script>
+                $('#dconfirm').click(() => {
+                    $('#adingopen')[0].play()
+                    if ($('#dtitle').html() == '尘辉兑换') {
+
+                        num = $('#duihuan').data('num')
+                        if (yuanshi < 160 * num - 160 * lanqiu) {
+                            $('#dtitle').html('凝取原石')
+                            $('#dtext').html('所需原石不足，是否跳转凝取原石界面')
+                            return
+
+                            // if (confirm(`缺少${160 * num - 160 * lanqiu - yuanshi}原石，跳转商城？`)) {
+                            //     $('#in')[0].showModal();
+                            //     return
+                            // } else {
+                            //     return
+                            // }
+                        }
+                        yuanshi = yuanshi - (160 * num - 160 * lanqiu)
+                        localStorage.setItem('yuanshi', '' + yuanshi)
+                        lanqiu = num
+
+                        $('#duihuan')[0].close()
+                        wish(num)
+                    } else {
+                        $('#duihuan')[0].close();
+                        $('#in')[0].showModal();
+                    }
+                })
+            </script>
+        </dialog>
+
         <div class="ding">
             <img src="./static/dingico.png" style="width: 8vw;position: absolute;top: 0;left: 0;">
-            <span id="dingtext" style="position: absolute;font-size: 1vw;width: max-content;line-height: 1.6vw;translate: -50% -50%;left: 4vw;bottom: 0;">奔行定轨</span>
+            <span id="dingtext" style="position: absolute;font-size: 1vw;width: max-content;line-height: 1.5vw;translate: -50% -50%;left: 4vw;bottom: 0;">混乱定轨</span>
         </div>
         <dialog id="dd" style="top: calc((56.25vw - 40.62vw - (1em * 2)) / 2);">
             <img src="./static/close2.png" style="position:absolute;width: 2vw;top: 2.5vw;right: 2.5vw;z-index: 520;" onclick="$('#dd')[0].close();$('#adingclose')[0].play()">
             <div id="dingcho" style="width: 67.37vw;height: 40.62vw;position: absolute;padding-left: 2vw;display: flex;flex-direction: column;align-items: center;justify-content: space-evenly;">
                 <p>选择定轨物品</p>
-                <div id="list" class="gun g1" style="overflow: auto;width: 58.95vw;height: 24.1165vw;"></div>
+                <div id="list" class="gun g1" style="overflow: auto;width: 53vw;height: 24.1165vw;"></div>
                 <p style="font-size: 1.7vw;">为<span id="dingname" style="font-size: 1.7vw;color: rgb(255, 154, 0);">沈乐妍</span>定轨</p>
                 <button id="dingbtny" style="margin-bottom: 3vw;">
                     <img src="./static/dingbtncho.png" style="width: 20vw;">
@@ -375,7 +1097,7 @@
             </div>
             <div id="dingcan" style="width: 67.37vw;height: 40.62vw;position: absolute;display: flex;flex-direction: column;justify-content: space-evenly;align-items: center;">
                 <p>已定轨物品</p>
-                <div id="chosen" style="float: none;"></div>
+                <div id="chosen" class="juese" style="float: none;"></div>
                 <p style="font-size: 1.5vw;">命定值：<span id="dingval" style="font-size: 1.5vw;color: rgb(255, 154, 0);">0</span>/1</p>
                 <button id="dingbtnc">
                     <img src="./static/dingbtncan.png" style="width: 20vw;">
@@ -393,11 +1115,11 @@
                     n = ''
                     for (let i = 0; i < i5.length; i++) {
                         if (i == 0) {
-                            n += `<div class="choicending cling" onclick="dingchan('${i5[i].eng}')" style="background-image: linear-gradient(180deg, #e59d3900 70%, #e9e5db 0%), url(./static/${i5[i].type == 'peo' ? 'dp' : 'kni'}/${i5[i].eng}.png), linear-gradient(180deg, #e59d39 70%, #e9e5db00 0%);background-size: cover;background-position: center;background-repeat: no-repeat;">${i5[i].name}</div>`
+                            n += `<div class="choicending cling" onclick="dingchan('${i5[i].eng}')">${genIdcard(i5[i])}</div>`
                             $('#dingname').html(i5[i].name)
                             $('#dingname').data('eng', i5[i].eng)
                         } else {
-                            n += `<div class="choicending" onclick="dingchan('${i5[i].eng}')" style="background-image: linear-gradient(180deg, #e59d3900 70%, #e9e5db 0%), url(./static/${i5[i].type == 'peo' ? 'dp' : 'kni'}/${i5[i].eng}.png), linear-gradient(180deg, #e59d39 70%, #e9e5db00 0%);background-size: cover;background-position: center;background-repeat: no-repeat;">${i5[i].name}</div>`
+                            n += `<div class="choicending" onclick="dingchan('${i5[i].eng}')">${genIdcard(i5[i])}</div>`
                         }
                     }
                     $('#list').html(n)
@@ -406,8 +1128,8 @@
                     $('#dingcan').css('display', 'flex')
 
                     $('#dingval').html(ding.value)
-                    $('#chosen').html(`${getengisobj(ding.eng).name}`)
-                    $('#chosen')[0].style = `background-image: linear-gradient(180deg, #e59d3900 70%, #e9e5db 0%), url(./static/${getengisobj(ding.eng).type == 'peo' ? 'dp' : 'kni'}/${ding.eng}.png), linear-gradient(180deg, #e59d39 70%, #e9e5db00 0%);background-size: cover;background-position: center;background-repeat: no-repeat;`
+                    $('#chosen').html(genIdcard(getengisobj(ding.eng)))
+                    // $('#chosen')[0].style = `background-image: linear-gradient(180deg, #e59d3900 75%, #e9e5db 0%), url(./static/${getengisobj(ding.eng).type == 'peo' ? 'dp' : 'dpkni'}/${ding.eng}.png), linear-gradient(180deg, #e59d39 75%, #e9e5db00 0%);background-size: cover;background-position: center;background-repeat: no-repeat;`
                 }
 
                 $('#dd')[0].showModal()
@@ -419,11 +1141,11 @@
                 i5 = getengisobj(eng)
                 $('#dingname').html(i5.name)
                 $('#dingname').data('eng', i5.eng)
-                
+
                 nl = document.querySelectorAll('.choicending')
                 for (let i = 0; i < nl.length; i++) {
                     nl[i].classList.remove('cling')
-                    if (nl[i].innerHTML == i5.name) {
+                    if (nl[i].innerHTML.indexOf(i5.name) != -1) {
                         nl[i].classList.add('cling')
                     }
                 }
@@ -438,6 +1160,7 @@
                 ding.value = 0
                 $('#dingtext').html('<span style="font-size: 1vw;color: rgb(255, 154, 0);">0</span>/1')
                 localStorage.setItem('ding', JSON.stringify(ding))
+                changecover(ding.eng)
                 $('.ding').click()
             })
 
@@ -446,91 +1169,177 @@
 
                 ding.eng = ''
                 ding.value = 0
-                $('#dingtext').html('奔行定轨')
-                localStorage.setItem('ding', JSON.stringify({'eng': '', 'value': 0}))
+                $('#dingtext').html('混乱定轨')
+                localStorage.setItem('ding', JSON.stringify({ 'eng': '', 'value': 0 }))
+                changecover()
                 $('.ding').click()
             })
         </script>
     </div>
+
+    <!-- Video -->
     <div id="video">
         <video style="width: 100vw;pointer-events: none;" muted webkit-playsinline="" x5-playsinline="" playsinline="">
             <source src="./static/286932797/o4.mp4" type="video/mp4">
         </video>
         <img src="./static/tiao.png" style="display: none;opacity: 0;position:absolute;width: 4.5vw;top: 2vw;right: 3vw;filter: brightness(1.3);" onclick="tiaovideo()">
     </div>
+
+    <!-- Shop/Detail Background -->
     <div id="bac2">
         <img src="./static/background2.png" style="width: 100vw;">
     </div>
+
     <div id="bac3"></div>
+    <script>
+        t = ''
+        for (let i = 0; i < 26; i++) {
+            var width = parseInt(Math.random() * 4 + 2)
+            // t += `<img src="./static/xiu.png" style="width: ${width}vw;transform: rotate(${i * 13.84}deg);" id="x${i + 1}" class="xiu">`
+            t += `<div style="width: ${width}vw;transform: rotate(${i * 13.84}deg);background-image: var(--xiumask);background-size: ${width}vw 17vw;/*background-color: var(--xiucol);*/" id="x${i + 1}" class="xiu"></div>`  // mix-blend-mode: multiply;
+        }
+        $('#bac3').html(t)
+    </script>
+
+    <!-- One People Display -->
     <div id="people">
         <div style="z-index: 1;position: absolute;translate: -25vw 2.8125vw;transform: scale(0.9);opacity: 0;" id="infor">
             <span style="font-size: 10vw;translate: -6.5vw -3.9375vw;position: absolute;color: white;" id="yuansu">⊘</span>
-            <span style="font-size: 4vw;position: absolute;width: max-content;color: white;text-shadow: 1px 1px black, -1px -1px black, 1px -1px black, -1px 1px black;" id="name">吴思远</span>
+            <span style="font-size: 4vw;position: absolute;width: max-content;color: white;text-shadow: 0.1vw 0.1vw black, -0.1vw -0.1vw black, 0.1vw -0.1vw black, -0.1vw 0.1vw black;" id="name">吴思远</span>
             <br>
-            <span style="position: absolute;translate: 1vw 1.125vw;width: max-content;font-size: 3vw;color: #ffc627;text-shadow: 1px 1px #e4a534, -1px -1px #e4a534, 1px -1px #e4a534, -1px 1px #e4a534;display: flex;" id="stars"></span>
+            <span style="position: absolute;translate: 1vw 1.125vw;width: max-content;font-size: 3vw;color: #ffc627;text-shadow: 0.1vw 0.1vw 1px #e4a534, -0.1vw -0.1vw 1px #e4a534, 0.1vw -0.1vw 1px #e4a534, -0.1vw 0.1vw 1px #e4a534, 0.14vw 0 1px #e4a534, -0.14vw 0 1px #e4a534, 0 -0.14vw 1px #e4a534, 0 0.14vw 1px #e4a534;display: flex;" id="stars"></span>
         </div>
         <img id="kb" src="./static/kni.png" style="height: 60vw;translate: 0 1.7vw;position: absolute;opacity: 0;">
         <img id="pi" src="./static/wsy.png" style="height: 56.25vw;translate: 0 1.7vw;transform: scale(3);filter: brightness(0);">
         <img id="tiao" src="./static/close.png" style="position: absolute;">
     </div>
+
+    <!-- Ten People Display -->
     <div id="allinall" style="opacity: 0;"></div>
     <script>
         var c9 = `<img src="./static/close.png" style="position: absolute;" onclick="$('#dongting')[0].play();location.reload()">`
         for (let i = 0; i < 10; i++) {
             c9 += `<div><div class="anall">
-            <img src="./static/huo.png" style="width: 4vw;">
+            <img src="" style="width: 4vw;">
             <a class="starf"></a>
         </div></div>`
         }
         $('#allinall').html(c9)
     </script>
 
-    <audio id="get"><source src="./static/get.wav"></audio>
-    <audio id="new0"><source src="./static/new0.wav"></audio>
-    <audio id="new"><source src="./static/new.wav"></audio>
-    <audio id="show"><source src="./static/show.wav"></audio>
-    <audio id="ting1"><source src="./static/ting.wav"></audio>
-    <audio id="ting2"><source src="./static/ting.wav"></audio>
-    <audio id="ting3"><source src="./static/ting.wav"></audio>
-    <audio id="ting4"><source src="./static/ting.wav"></audio>
-    <audio id="ting5"><source src="./static/ting.wav"></audio>
-    <audio id="tuang"><source src="./static/tuang.wav"></audio>
+    <!-- Sound Assets -->
+    <audio id="get">
+        <source src="./static/audio/get.wav">
+    </audio>
+    <audio id="new0">
+        <source src="./static/audio/new0.wav">
+    </audio>
+    <audio id="new">
+        <source src="./static/audio/new.wav">
+    </audio>
+    <audio id="show">
+        <source src="./static/audio/show.wav">
+    </audio>
+    <audio id="ting1">
+        <source src="./static/audio/ting.wav">
+    </audio>
+    <audio id="ting2">
+        <source src="./static/audio/ting.wav">
+    </audio>
+    <audio id="ting3">
+        <source src="./static/audio/ting.wav">
+    </audio>
+    <audio id="ting4">
+        <source src="./static/audio/ting.wav">
+    </audio>
+    <audio id="ting5">
+        <source src="./static/audio/ting.wav">
+    </audio>
+    <audio id="tuang">
+        <source src="./static/audio/tuang.wav">
+    </audio>
     <audio id="aud"></audio>
 
-    <audio id="adingopen"><source src="./static/dingopen.wav"></audio>
-    <audio id="adingclose"><source src="./static/dingclose.wav"></audio>
-    <audio id="adingy"><source src="./static/dingy.wav"></audio>
-    <audio id="adingc"><source src="./static/dingc.wav"></audio>
+    <audio id="adingopen">
+        <source src="./static/audio/dingopen.wav">
+    </audio>
+    <audio id="adingclose">
+        <source src="./static/audio/dingclose.wav">
+    </audio>
+    <audio id="adingy">
+        <source src="./static/audio/dingy.wav">
+    </audio>
+    <audio id="adingc">
+        <source src="./static/audio/dingc.wav">
+    </audio>
 
-    <audio id="dongting"><source src="./static/dongting.wav"></audio>
-    <audio id="gelong"><source src="./static/gelong.wav"></audio>
-    <audio id="gelu"><source src="./static/gelu.wav"></audio>
-    <audio id="new-1"><source src="./static/new-1.wav"></audio>
+    <audio id="dongting">
+        <source src="./static/audio/dongting.wav">
+    </audio>
+    <audio id="gelong">
+        <source src="./static/audio/gelong.wav">
+    </audio>
+    <audio id="gelu">
+        <source src="./static/audio/gelu.wav">
+    </audio>
+    <audio id="new-1">
+        <source src="./static/audio/new-1.wav">
+    </audio>
+
+    <audio id="shopsound">
+        <source src="./static/audio/shop.wav">
+    </audio>
 
     <script>
         // color = [['#5b8dd6', '#648ccc', '#3164b4', '#5989bc', '#2b3a4b'], ['#835bd6', '#b164cc', '#4f3e98', '#8059bc', '#2b2e4b'], ['#d6a95b', '#cca564', '#b46f31', '#bca359', '#4b462b']]
-        color4 = [
+        const color2 = ['#4290ef7f', '#a494ff', '#ffd770']
+        const color4 = [
             'radial-gradient(circle, #3a5cade8 calc(var(--p) / 20), #3a5cadde calc(var(--p) / 5), #3a5cadf0 calc(var(--p) / 3.33), #3a5cad66 calc(var(--p) / 2), #3a5cad33 calc(var(--p) / 1.5), #000b 100%)',
             'radial-gradient(circle, #7e50b8e8 calc(var(--p) / 20), #7e50b8de calc(var(--p) / 5), #b359fff0 calc(var(--p) / 3.33), #b359ffde calc(var(--p) / 2), #6a3399c9 calc(var(--p) / 1.5), #000b 100%)',
             'radial-gradient(circle, #0000 calc(var(--p) / 20), #ffdb52bb calc(var(--p) / 5), #ffdb52bb calc(var(--p) / 3.33), #ff9b35bb calc(var(--p) / 1.8), #ff9b35bb calc(var(--p) / 1.5), #000b 100%)'
         ]
+        const xiucols = ['#bfe4ff', '#d7baff', '#ffe7a0']
+        const color6 = ['#595252', '#a256e1', '#bd6932']
+
+        const rates = {
+            '5star': 0.6,
+            '4star': 9,
+            'buhuo': 5
+        }
+
         ani = []
+        interval = []
+
+        function genIdcard(item) {
+            return `<img src="./static/5.png" style="width: 6vw;position: absolute;"><img src="./static/dp${item.type == 'kni' ? 'kni' : ''}/${item.eng}.png" style="width: 96%;margin-top: 0.1vw;position: absolute;"><img src="./static/6.png" style="width: 6vw;position: absolute;"><span style="position: absolute;font-size: 89%;margin-top: 96%;">${item.name}</span>`
+        }
 
         function getRandomItems(count) {
+            ll = []
+            for (let ii = 0; ii < history.length; ii++) {
+                ll.push(getengisobj(history[ii]).star)
+            }
+            ll.reverse()
+            dian = ll.indexOf(5)
+            dian = dian == -1 ? ll.length : dian
+
             i5 = list.filter(item => item.star === 5)
             i4 = list.filter(item => item.star === 4)
             i3 = list.filter(item => item.star === 3)
 
-            const rates = {
-                '5star': 1,
-                '4star': 9
-            }
+            var buhuo = false
 
             function drawItem() {
                 let rand = Math.random() * 100;
-                if (rand <= rates['5star']) {
+
+                r5 = (dian > 73 ? (dian - 73) * 6 : 0) + rates['5star']
+                r4 = rates['4star']
+
+                console.log(dian, r5)
+
+                if (rand <= r5) {
                     return i5[Math.floor(Math.random() * i5.length)]
-                } else if (rand <= rates['5star'] + rates['4star']) {
+                } else if (rand <= r5 + r4) {
                     return i4[Math.floor(Math.random() * i4.length)]
                 } else {
                     return i3[Math.floor(Math.random() * i3.length)]
@@ -541,15 +1350,37 @@
             let highestStar = 0
 
             for (let i = 0; i < count; i++) {
+                dian++
+
                 let item = drawItem();
+
+                dian = item.star == 5 ? 0 : dian
+
                 if (ding.eng != '' && item.star == 5) {
                     if (ding.value == 1) {
                         item = getengisobj(ding.eng)
                         ding.value = 0
                     } else if (item.eng != ding.eng) {
-                        ding.value = 1
+                        let rand = Math.random() * 100
+                        if (rand <= rates['buhuo']) {
+                            item = getengisobj(ding.eng)
+                            buhuo = true
+                            ding.value = 0
+
+                            console.log('捕获明光~')
+                        } else {
+                            let rand = Math.random() * 100;
+                            if (rand <= 50) {
+                                ding.value = 1
+                            } else {
+                                item = getengisobj(ding.eng)
+                                ding.value = 0
+                            }
+                        }
                     }
                 }
+                console.log('%c' + item.name, 'color: ' + color6[item.star - 3] + ';font-weight:bold;')
+
                 result.push(item);
                 if (item.star > highestStar) {
                     highestStar = item.star;
@@ -561,34 +1392,33 @@
                 result.pop();
                 result.push(i4[Math.floor(Math.random() * i4.length)])
                 highestStar = 4
+
+                console.log('%c触发 4 星保底：', 'color: #31b91d;font-weight:bold;')
+                console.log('%c' + result[result.length - 1].name, 'color: ' + color6[1] + ';font-weight:bold;')
             }
 
             // 如果80次确保有一个金
-            ll = []
-            for (let ii = 0; ii < history.length; ii++) {
-                ll.push(getengisobj(history[ii]).star)
-            }
-            ll.reverse()
-            if ((ll.indexOf(5) > 79 || (ll.indexOf(5) == -1 && ll.length > 79)) && highestStar < 5) {
-                result.pop()
+            // if ((ll.indexOf(5) == 90 || (ll.indexOf(5) == -1 && ll.length == 90)) && highestStar < 5) {
+            //     result.pop()
 
-                item = i5[Math.floor(Math.random() * i5.length)]
-                if (ding.value == 1) {
-                    item = getengisobj(ding.eng)
-                    ding.value = 0
-                } else if (item.eng != ding.eng) {
-                    ding.value = 1
-                }
-                result.push(item)
-                highestStar = 5
-            }
+            //     item = i5[Math.floor(Math.random() * i5.length)]
+            //     if (ding.value == 1) {
+            //         item = getengisobj(ding.eng)
+            //         ding.value = 0
+            //     } else if (item.eng != ding.eng) {
+            //         ding.value = 1
+            //     }
+            //     result.push(item)
+            //     highestStar = 5
+            // }
 
-            // li = [list.filter(item => item.eng.search('xigewen') != -1)[0]];
+            // li = [list.filter(item => item.eng.search('kaqina') != -1)[0]];
             // return {'list': li, 'highestStar': li[0].star};
 
             return {
                 'list': result,
-                'highestStar': highestStar
+                'highestStar': highestStar,
+                'buhuo': buhuo
             };
         }
 
@@ -605,29 +1435,42 @@
             return [l * Math.sin(xita / 180 * Math.PI), -l * Math.cos(xita / 180 * Math.PI)]
         }
 
-        function showpeo(item, last, all, fir=false) {
+        function showpeo(item, last, all, fir = false) {
             for (let i = 0; i < ani.length; i++) {
                 ani[i].cancel()
             }
             ani = []
+            for (let i = 0; i < interval.length; i++) {
+                clearInterval(interval[i])
+                clearTimeout(interval[i])
+            }
+            interval = []
 
-            $('#pi').off("click")
             $('#tiao').off("click")
             $('#tiao').css('pointer-events', 'none')
             if (all.length > 1) {
                 $('#tiao').attr('src', './static/tiao.png')
-                $('#tiao').click(() => {$('#gelong')[0].play();allinall(all);})
+                $('#tiao').click(() => { $('#gelong')[0].play(); allinall(all); })
             } else {
                 $('#tiao').attr('src', './static/close.png')
-                $('#tiao').click(() => {$('#dongting')[0].play();location.reload();})
+                $('#tiao').click(() => { $('#dongting')[0].play(); location.reload(); })
             }
+
+            $('#pi').off("click")
+            if (last.length > 0) {
+                $('#pi').click(() => { showpeo(last[0], last.slice(1), all); })
+            } else if (all.length == 10 && last.length == 0) {
+                $('#pi').click(() => { allinall(all); })
+            }
+
+            $('#tiao').css('pointer-events', 'auto')
 
             if (item.type == 'peo') {
                 $('#aud').html(`<source src="./static/res/${item.eng}.wav">`)
                 $('#aud').load()
                 $('#name').html(item.name)
                 $('#pi').attr('src', `./static/res/${item.eng}.png`)
-                $('#pi').css('height', item.star == 5 ? '86vw' : '60vw') // 56.25  translate: 0 1.7vw;
+                $('#pi').css('height', `60vw`)
                 $('#pi').css('translate', '0vw' + (item.star == 5 ? ' 1.7vw' : ''))
                 $('#yuansu').html(`<img src="./static/${item.el}.png" style="width: 10vw;translate: 0 1vw;">`)
             } else {
@@ -643,14 +1486,16 @@
                 $('#pi').css('translate', '0vw')
                 $('#yuansu').html(`<img src="./static/${item.el}.png" style="width: 10vw;translate: 0 2vw;filter: url(#unsharpy);">`)
             }
+            document.body.style.setProperty('--xiucol', xiucols[item.star - 3])
 
-            setTimeout(() => {
+            interval.push(setTimeout(() => {
                 // for (let i = 0; i < 5; i++) {
                 //     document.body.style.setProperty(`--c${i + 1}`, color[item.star - 3][i])
                 // }
                 $('#bac3').css('background', color4[item.star - 3])
 
                 $('#people').css('display', 'flex')
+                $('#new' + (fir ? '0' : ''))[0].currentTime = 0
                 $('#new' + (fir ? '0' : ''))[0].play()
                 ani.push($('#pi')[0].animate([{
                     transform: 'scale(3)'
@@ -658,11 +1503,11 @@
                     transform: 'scale(1)'
                 }], {
                     duration: 300,
-                    ease: 'ease-in',
+                    easing: 'ease-out',
                     fill: 'forwards'
                 }))
 
-                setTimeout(() => {
+                interval.push(setTimeout(() => {
                     ani.push($('#bac3')[0].animate([{
                         display: 'flex',
                         opacity: 0
@@ -671,27 +1516,27 @@
                         opacity: 0.85
                     }], {
                         duration: 100,
-                        ease: 'ease-in',
+                        easing: 'ease-out',
                         fill: 'forwards'
                     }))
                     x = 30
-                    si = setInterval(function () {
+                    interval.push(si = setInterval(function () {
                         document.body.style.setProperty('--p', '' + (x++) * 1 + '%')
                         if (x == 100) {
                             clearInterval(si)
                         }
-                    }, 1)
+                    }, 5)) // 1
 
 
                     x2 = 0
-                    si2 = setInterval(function () {
+                    interval.push(si2 = setInterval(function () {
                         for (let i = 0; i < 26; i++) {
                             $('#x' + (i + 1)).css('translate', `${xy(x2 * 5, i * 13.84)[0] / 10}vw ${xy(x2 * 5, i * 13.84)[1] / 10}vw`)
                         }
                         if (x2++ == 100) {
                             clearInterval(si2)
                         }
-                    }, 3)
+                    }, 3))
 
                     document.querySelectorAll('.xiu').forEach(el => {
                         ani.push(el.animate([{
@@ -704,13 +1549,13 @@
                             opacity: 0
                         }], {
                             duration: 800,
-                            ease: 'ease-in',
+                            easing: 'ease-out',
                             fill: 'forwards'
                         }))
                     });
-                }, 100)
+                }, 100))
 
-                setTimeout(() => {
+                interval.push(setTimeout(() => {
                     $('#show')[0].play()
                     ani.push($('#pi')[0].animate([{
                         translate: '0vw' + (item.star == 5 && item.type == 'peo' ? ' 1.7vw' : ''),
@@ -723,7 +1568,7 @@
                         filter: 'brightness(1)' + (item.type == 'kni' ? 'drop-shadow(0.5vw 0.5vw 0 black)' : '')
                     }], {
                         duration: 200,
-                        ease: 'ease',
+                        easing: 'ease-out',
                         fill: 'forwards'
                     }))
 
@@ -736,7 +1581,7 @@
                             opacity: 1
                         }], {
                             duration: 200,
-                            ease: 'ease',
+                            easing: 'ease-out',
                             fill: 'forwards'
                         }))
                     }
@@ -752,7 +1597,7 @@
                         opacity: 0
                     }], {
                         duration: 300,
-                        ease: 'ease-in',
+                        easing: 'ease-out',
                         fill: 'forwards'
                     }))
                     ani.push($('#infor')[0].animate([{
@@ -763,55 +1608,65 @@
                         opacity: 1
                     }], {
                         duration: 200,
-                        ease: 'ease-in',
+                        easing: 'ease-out',
                         fill: 'forwards'
                     }))
-                }, 1000)
+                }, 1000))
 
-                setTimeout(() => {
-                xs = 1
-                t = ''
-                for (let i = 0; i < item.star; i++) {
-                    t += `<span class="star" id="star${i+1}">★</span>`
-                }
-                $('#stars').html(t)
-
-                si3 = setInterval(() => {
-                    $('#ting' + xs)[0].play()
-                    ani.push($('#star' + xs)[0].animate([{
-                        // transform: 'scale(2.5)',
-                        opacity: 0,
-                        fontSize: '6vw'
-                    }, {
-                        // transform: 'scale(1)',
-                        opacity: 1,
-                        fontSize: '3vw'
-                    }], {
-                        duration: 150,
-                        ease: 'ease-in',
-                        fill: 'forwards'
-                    }))
-                    if (xs++ == item.star) {
-                        clearInterval(si3)
-                        setTimeout(() => {
-                            $('#aud')[0].play()
-
-                            if (last.length > 0) {
-                                $('#pi').click(() => {showpeo(last[0], last.slice(1), all);})
-                            } else if (all.length == 10 && last.length == 0) {
-                                $('#pi').click(() => {allinall(all);})
-                            }
-                            $('#tiao').css('pointer-events', 'auto')
-                        }, 500)
+                interval.push(setTimeout(() => {
+                    xs = 1
+                    t = ''
+                    for (let i = 0; i < item.star; i++) {
+                        t += `<span class="star" id="star${i + 1}">★</span>`
                     }
-                }, 160)
-            }, 1600)
-            }, 100)
+                    $('#stars').html(t)
+
+                    interval.push(si3 = setInterval(() => {
+                        $('#ting' + xs)[0].play()
+                        ani.push($('#star' + xs)[0].animate([{
+                            // transform: 'scale(2.5)',
+                            opacity: 0,
+                            fontSize: '6vw'
+                        }, {
+                            // transform: 'scale(1)',
+                            opacity: 1,
+                            fontSize: '3vw'
+                        }], {
+                            duration: 150,
+                            easing: 'ease-out',
+                            fill: 'forwards'
+                        }))
+                        if (xs++ == item.star) {
+                            clearInterval(si3)
+                            interval.push(setTimeout(() => {
+                                $('#aud')[0].play()
+
+                                // if (last.length > 0) {
+                                //     $('#pi').click(() => {showpeo(last[0], last.slice(1), all);})
+                                // } else if (all.length == 10 && last.length == 0) {
+                                //     $('#pi').click(() => {allinall(all);})
+                                // }
+
+                                // $('#tiao').css('pointer-events', 'auto')
+                            }, 500))
+                        }
+                    }, 160))
+                }, 1600))
+            }, 100))
         }
 
-        color2 = ['#4290ef', '#a494ff', '#ffd770']
         var map = new Map()
         function allinall(pli) {
+            for (let i = 0; i < ani.length; i++) {
+                ani[i].cancel()
+            }
+            ani = []
+            for (let i = 0; i < interval.length; i++) {
+                clearInterval(interval[i])
+                clearTimeout(interval[i])
+            }
+            interval = []
+
             $('#aud')[0].pause()
 
             p = pli.filter(item => item.type == 'peo')
@@ -824,15 +1679,16 @@
             p3 = pli.filter(item => item.star === 3)
 
             pli = p5.concat(p4).concat(p3)
-            
+
             map = new Map()
             for (let i = 0; i < 10; i++) {
                 x = $(document.querySelectorAll('.anall')[i])
                 x.css('backgroundImage', 'linear-gradient(180deg, #0000 60%, #0009 100%), url(./static/' + (pli[i].type == 'peo' ? `res/${pli[i].eng}2.png` : `kni/${pli[i].eng}.png`) + '), linear-gradient(180deg, #516883 10%, #bec5ab 45%, #bec5ab 55%, #516883 100%)')
-                x.css('clip-path', 'polygon(3.7715vw 0, calc(100% - 3.7715vw) 0, 100% 3.7715vw, 100% calc(100% - 3.7715vw), calc(100% - 3.7715vw) 100%, 3.7715vw 100%, 0 calc(100% - 3.7715vw), 0 3.7715vw)')
+                x.css('clip-path', 'polygon(0% 11%, 5% 9.5%, 20% 8%, 25% 3.5%, 50% 0%, 75% 3.5%, 80% 8%, 95% 9.5%, 100% 11%, 100% 89%, 95% 90.5%, 80% 92%, 75% 96.5%, 50% 100%, 25% 96.5%, 20% 92%, 5% 90.5%, 0% 89%)')  // polygon(3.7715vw 0, calc(100% - 3.7715vw) 0, 100% 3.7715vw, 100% calc(100% - 3.7715vw), calc(100% - 3.7715vw) 100%, 3.7715vw 100%, 0 calc(100% - 3.7715vw), 0 3.7715vw)
 
-                x.parent().css('filter', `drop-shadow(${color2[pli[i].star - 3]} 0px 30px 2vw) drop-shadow(${color2[pli[i].star - 3]} 0px -30px 2vw)`)  // 0px 0px 3vw 2vw  
+                x.parent().css('filter', `drop-shadow(0.1vw 0.1vw 0 white) drop-shadow(-0.05vw -0.05vw 0 white) drop-shadow(-0.05vw 0.05vw 0 white) drop-shadow(0.05vw -0.05vw 0 white) ` + `drop-shadow(${color2[pli[i].star - 3]} 0 ${(4 ** (pli[i].star - 3)) * 0.2}vw 2vw) drop-shadow(${color2[pli[i].star - 3]} 0 -${(4 ** (pli[i].star - 3)) * 0.2}vw 2vw)`)  // 0 0 3vw 2vw  
                 x.parent().css('zIndex', 20 - i)
+                x.parent()[0].classList.add('anallwai')
                 if (pli[i].type == 'kni' && pli[i].el == 'faqi') {
                     x.css('backgroundSize', '100%')
                 } else if (pli[i].type == 'kni') {
@@ -840,10 +1696,10 @@
                 }
 
                 $(x.children()[0]).attr('src', `./static/${pli[i].el}.png`)
-                $(x.children()[0]).css('filter', pli[i].type == 'kni' ? 'brightness(5)' : 'brightness(1.3)')
+                $(x.children()[0]).css('filter', pli[i].type == 'kni' ? 'brightness(5)' : 'brightness(1.1)')
                 $(x.children()[1]).html('★'.repeat(pli[i].star))
 
-                var a = document.querySelectorAll('.anall')[i].animate([{
+                var a = document.querySelectorAll('.anallwai')[i].animate([{
                     opacity: 0,
                     translate: '15vw 0'
                 }, {
@@ -851,7 +1707,7 @@
                     translate: '0 0'
                 }], {
                     duration: 300,
-                    ease: 'ease-in',
+                    easing: 'ease-out',  // ease-out cubic-bezier(0.8, 0.2, 1, 1)
                     fill: 'forwards'
                 })
                 a.pause()
@@ -861,9 +1717,9 @@
 
             $(document).ready(() => {
                 for (let i = 0; i < 10; i++) {
-                    setTimeout((p) => {map.get(p).play();}, 80 * i, i)
+                    setTimeout((p) => { map.get(p).play(); }, 80 * i, i)
                 }
-            
+
                 $('#people')[0].animate([{
                     opacity: 1,
                     display: 'none'
@@ -872,7 +1728,7 @@
                     display: 'none'
                 }], {
                     duration: 60,
-                    ease: 'ease-in',
+                    easing: 'ease-out',
                     fill: 'forwards'
                 })
 
@@ -884,7 +1740,7 @@
                     display: 'flex'
                 }], {
                     duration: 60,
-                    ease: 'ease-in',
+                    easing: 'ease-out',
                     fill: 'forwards'
                 })
 
@@ -892,12 +1748,44 @@
             })
         }
 
-        function tiaovideo(id) {
+        function tiaovideo() {
+            if (window.buhuo) {
+                $('img[onclick="tiaovideo()"]')[0].animate([{
+                    opacity: 1
+                }, {
+                    opacity: 0
+                }], {
+                    duration: 150,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                })
+
+                setTimeout(() => {
+                    $('img[onclick="tiaovideo()"]').css('display', 'none')
+                    $('#video').click(() => {
+                        $('img[onclick="tiaovideo()"]').css('display', 'block')
+                        $('img[onclick="tiaovideo()"]')[0].animate([{
+                            opacity: 0
+                        }, {
+                            opacity: 1
+                        }], {
+                            duration: 150,
+                            easing: 'ease-out',
+                            fill: 'forwards'
+                        })
+
+                        $('#video').off('click')
+                    })
+                }, 150)
+                return
+            }
             clearTimeout(waitvideo)
 
             $('video')[0].pause()
             $('#get')[0].pause()
-            
+
+            $('#bb').css('display', 'none')
+
             $('#bac2')[0].animate([{
                 display: 'block',
                 opacity: 0
@@ -906,7 +1794,7 @@
                 opacity: 1
             }], {
                 duration: 100,
-                ease: 'ease-out',
+                easing: 'ease-out',
                 fill: 'forwards'
             })
 
@@ -918,7 +1806,7 @@
                     filter: 'brightness(1.6)'
                 }], {
                     duration: 200,
-                    ease: 'ease-out',
+                    easing: 'ease-out',
                     fill: 'forwards'
                 })
                 setTimeout(() => {
@@ -934,7 +1822,32 @@
         function wish(num) {
             $('#gelu')[0].play()
 
+            if (lanqiu < num) {
+                $('#duihuan').data('num', num)
+                $('#dtitle').html('尘辉兑换')
+                $('#dtext').html(`缺少<span style="font-size: 1.6vw;color: #f49c00;">${num - lanqiu}</span>个相遇之缘，是否消耗<span style="font-size: 1.6vw;color: #f49c00;">${160 * num - 160 * lanqiu}</span>原石购买？`)
+                $('#duihuan')[0].showModal()
+                return
+                // if (confirm(`缺少${num - lanqiu}个相遇之缘，使用${160 * num - 160 * lanqiu}原石购买？`)) {
+                //     if (yuanshi < 160 * num - 160 * lanqiu) {
+                //         if (confirm(`缺少${160 * num - 160 * lanqiu - yuanshi}原石，跳转商城？`)) {
+                //             $('#in')[0].showModal();
+                //             return
+                //         } else {
+                //             return
+                //         }
+                //     }
+                //     yuanshi = yuanshi - (160 * num - 160 * lanqiu)
+                //     localStorage.setItem('yuanshi', '' + yuanshi)
+                //     lanqiu = num
+                // } else {
+                //     return
+                // }
+            }
+            localStorage.setItem('lanqiu', '' + (lanqiu - num))
+
             items = getRandomItems(num)
+            window.buhuo = items.buhuo
             eng = []
             for (let i = 0; i < items.list.length; i++) {
                 eng.push(items.list[i].eng)
@@ -942,7 +1855,8 @@
             localStorage.setItem('history', JSON.stringify(history.concat(eng)))
             localStorage.setItem('ding', JSON.stringify(ding))
 
-            $('video')[0].childNodes[1].src = `./static/286932797/${num == 10 ? 't' : 'o'}${items.highestStar}.mp4`
+            $('#bb').css('display', 'block')
+            $('video')[0].childNodes[1].src = `./static/286932797/${num == 10 ? 't' : 'o'}${items.highestStar}${items.buhuo ? '-b' : ''}.mp4`
             $('video').load()
 
             $('#video')[0].style.display = 'block'
@@ -952,7 +1866,7 @@
                 opacity: 1
             }], {
                 duration: 100,
-                ease: 'ease-out',
+                easing: 'ease-out',
                 fill: 'forwards'
             })
 
@@ -962,6 +1876,18 @@
             }, 100)
 
             waitvideo = setTimeout(() => {
+                $('#bb').css('display', 'none')
+
+                // $('#video')[0].animate([{
+                //     filter: 'brightness(1)'
+                // }, {
+                //     filter: 'brightness(2)'
+                // }], {
+                //     duration: 100,
+                //     easing: 'ease-out',
+                //     fill: 'forwards'
+                // })
+
                 $('#bac2')[0].animate([{
                     display: 'block',
                     opacity: 0
@@ -970,18 +1896,18 @@
                     opacity: 1
                 }], {
                     duration: 100,
-                    ease: 'ease-out',
+                    easing: 'ease-out',
                     fill: 'forwards'
                 })
 
                 // showpeo(item, [], [item])
                 showpeo(items.list[0], items.list.slice(1), items.list, true)
-            }, 5999)
+            }, 6099)
 
         }
 
-        $('#wish').click(() => {wish(1);})
-        $('#wish10').click(() => {wish(10);})
+        $('#wish').click(() => { wish(1); })
+        $('#wish10').click(() => { wish(10); })
 
         $('#video').click(() => {
             $('img[onclick="tiaovideo()"]').css('display', 'block')
@@ -991,21 +1917,86 @@
                 opacity: 1
             }], {
                 duration: 150,
-                ease: 'ease-in',
+                easing: 'ease-out',
                 fill: 'forwards'
             })
-            
+
             $('#video').off('click')
         })
-
-        t = ''
-        for (let i = 0; i < 26; i++) {
-            t += `<img src="./static/xiu.png" style="width: ${parseInt(Math.random() * 4 + 2)}vw;transform: rotate(${i * 13.84}deg);" id="x${i + 1}" class="xiu">`
-        }
-        $('#bac3').html(t)
     </script>
+
+    <!-- Detail -->
+    <div id="detail" class="historypage" style="display: none;">
+        <img src="./static/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#detail').css('display', 'none');">
+
+        <div class="historybox">
+            <div class="historytitle">
+                <img src="./static/icon.png">
+                <p>「乱七<span style="color: #ff7418" class="hk4e-pc-android-font">八糟</span>」常驻祈愿</p>
+            </div>
+            <div class="historychoice">
+                <div id="h1" class="historychoosed"><span>详情说明</span></div>
+                <div id="h2"><span>物品清单</span></div>
+            </div>
+            <div id="detailcontent" class="historycontent gun g2"></div>
+            <script>
+                const detail = '<p> 祈愿详情 </p> <p> 永久 </p> <div>「乱七<span style="color: #ff7418">八糟</span>」常驻祈愿为永久性祈愿活动，玩家可以抽取非限定角色与武器。 在本祈愿内，每10次祈愿<span style="color: #c93f23">必会</span>获得至少1个4星或以上物品。 <br><p></p> ※一般情况下所有角色或武器均适用基础概率，如触发概率UP、保底等以具体规则为准。 <br><p></p> 〓祈愿规则〓 5星物品祈愿的基础概率为<span style="color: #c93f23">0.600%</span>，5星角色祈愿的基础概率为<span style="color: #c93f23">0.300%</span>，5星武器祈愿的基础概率为<span style="color: #c93f23">0.300%</span>，5星物品祈愿综合概率（含保底）为<span style="color: #c93f23">1.600%</span>，最多<span style="color: #c93f23">90</span>次祈愿必定能通过保底获取5星物品。 4星物品祈愿的基础概率为<span style="color: #c93f23">5.100%</span>，4星角色祈愿的基础概率为<span style="color: #c93f23">2.550%</span>，4星武器祈愿的基础概率为<span style="color: #c93f23">2.550%</span>，4星物品祈愿的综合概率（含保底）为<span style="color: #c93f23">13.000%</span>。最多<span style="color: #c93f23">10</span>次祈愿必定能通过保底获取4星或以上物品，通过保底获取4星物品的概率为<span style="color: #c93f23">99.400%</span>，获取5星物品的概率为<span style="color: #c93f23">0.600%</span>。 祈愿获得5星武器时，会同时获得10个<span style="color: #bd6932">无主的星辉</span>作为副产物；获得4星武器时，会同时获得2个<span style="color: #bd6932">无主的星辉</span>作为副产物；获得3星武器时，会同时获得15个<span style="color: #a256e1">无主的星尘</span>作为副产物。 <br><p></p> 〓若获得重复角色〓 无论通过何种方式（包含但不限于祈愿、商城兑换、系统赠送等）第2~7次获得相同5星角色时，每次将转化为1个<span style="color: #a256e1">对应角色的命星</span>和10个<span style="color: #bd6932">无主的星辉</span>；第8次及之后获得，将仅转化为25个<span style="color: #bd6932">无主的星辉</span>。 无论通过何种方式（包含但不限于祈愿、商城兑换、系统赠送等）第2~7次获得相同4星角色时，每次将转化为1个<span style="color: #a256e1">对应角色的命星</span>和2个<span style="color: #bd6932">无主的星辉</span>；第8次及之后获得，将仅转化为5个<span style="color: #bd6932">无主的星辉</span>。</div>'
+                const itemslist = ''
+                $('#detailcontent').html(detail)
+
+                $('#h1').click(() => {
+                    $('#h2').removeClass('historychoosed')
+                    $('#h1').addClass('historychoosed')
+                    $('#detailcontent').html(detail)
+                })
+                $('#h2').click(() => {
+                    $('#h1').removeClass('historychoosed')
+                    $('#h2').addClass('historychoosed')
+                    $('#detailcontent').html(itemslist)
+                })
+            </script>
+        </div>
+    </div>
+
+    <!-- Shop -->
+    <div id="shoppage" class="historypage" style="display: none;">
+        <img src="./static/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#shoppage').css('display', 'none');">
+        <img src="./static/shop.png" style="width: 100vw;height: 56.25vw;">
+    </div>
+
+    <!-- History -->
+    <div id="historypage" class="historypage" style="display: none;">
+        <img src="./static/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#historypage').css('display', 'none');">
+
+        <div class="historybox">
+            <div class="historytitle">
+                <img src="./static/icon.png">
+                <p>「乱七<span style="color: #ff7418" class="hk4e-pc-android-font">八糟</span>」常驻祈愿</p>
+            </div>
+            <div class="historychoice">
+                <div><span>历史记录</span></div>
+            </div>
+            <div id="historycontent" class="historycontent gun g2"></div>
+            <script>
+                setTimeout(() => {
+                    const types = {
+                        'peo': '角色',
+                        'kni': '武器'
+                    }
+                    var content = '<table style="margin: 2vw;width: 55vw;text-align: center;" bordercolor="#595252" border="1"><tr><th>类型</th><th>名称</th></tr>'
+                    for (var i = history.length - 1; i > -1; i--) {
+                        var thisitem = getengisobj(history[i])
+                        content += `<tr style="color: ${color6[thisitem.star - 3]}"><td>${types[thisitem.type]}</td><td>${thisitem.name}</td></tr>`
+                    }
+                    $('#historycontent').html(content)
+                }, 200)
+            </script>
+        </div>
+    </div>
+
     <script>
-        // 艾梅莉埃@5 卡齐娜@? 基尼奇@? 玛拉妮@?
+        // 希诺宁@5 恰斯卡@5 茜特菈莉@5 玛薇卡@5
+        // 山王长牙@5 苍纹角杯@4 息燧之笛@4 撼地者@4 虹的行迹@4 木棉之环@4 碎链@4
 
         const peo4 = [
             {
@@ -1287,7 +2278,83 @@
                 'eng': 'feimini',
                 'el': 'bing',
                 'star': 4
-            }
+            },
+            {
+                'type': 'peo',
+                'name': '卡齐娜',
+                'eng': 'kaqina',
+                'el': 'yan',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '欧洛伦',
+                'eng': 'ouluolun',
+                'el': 'lei',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '蓝砚',
+                'eng': 'lanyan',
+                'el': 'feng',
+                'star': 4
+            },
+
+            // 2025 11 08
+            {
+                'type': 'peo',
+                'name': '爱诺',
+                'eng': 'ainuo',
+                'el': 'shui',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '伊法',
+                'eng': 'yifa',
+                'el': 'feng',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '塔利雅',
+                'eng': 'taliya',
+                'el': 'shui',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '伊安珊',
+                'eng': 'yianshan',
+                'el': 'lei',
+                'star': 4
+            },
+
+            // 2025 04 24
+            {
+                'type': 'peo',
+                'name': '叶洛亚',
+                'eng': 'yeluoya',
+                'el': 'yan',
+                'star': 4
+            },
+            {
+                'type': 'peo',
+                'name': '雅珂达',
+                'eng': 'yakeda',
+                'el': 'feng',
+                'star': 4
+            },
+
+            // 2026 04 24 无语音
+            {
+                'type': 'peo',
+                'name': '布伦妮',
+                'eng': 'bulunni',
+                'el': 'feng',
+                'star': 4
+            },
         ]
 
         const peo5 = [
@@ -1591,20 +2658,179 @@
                 'eng': 'xigewen',
                 'el': 'shui',
                 'star': 5
-            }
+            },
+            {
+                'type': 'peo',
+                'name': '艾梅莉埃',
+                'eng': 'aimeiliai',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '玛拉妮',
+                'eng': 'malani',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '基尼奇',
+                'eng': 'jiniqi',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '希诺宁',
+                'eng': 'xinuoning',
+                'el': 'yan',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '恰斯卡',
+                'eng': 'qiasika',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '茜特菈莉',
+                'eng': 'xitelali',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '玛薇卡',
+                'eng': 'maweika',
+                'el': 'huo',
+                'star': 5
+            },
+
+            // 2025 11 08
+            {
+                'type': 'peo',
+                'name': '爱可菲',
+                'eng': 'aikefei',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '菲林斯',
+                'eng': 'feilinsi',
+                'el': 'lei',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '菈乌玛',
+                'eng': 'lawuma',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '梦见月瑞希',
+                'eng': 'mengjianyueruixi',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '奈芙尔',
+                'eng': 'naifuer',
+                'el': 'cao',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '丝柯克',
+                'eng': 'sikeke',
+                'el': 'bing',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '瓦雷莎',
+                'eng': 'waleisha',
+                'el': 'lei',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '伊涅芙',
+                'eng': 'yiniefu',
+                'el': 'lei',
+                'star': 5
+            },
+            //2026 04 12
+            {
+                'type': 'peo',
+                'name': '杜林',
+                'eng': 'dulin',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '哥伦比娅',
+                'eng': 'gelunbiya',
+                'el': 'shui',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '兹白',
+                'eng': 'zibai',
+                'el': 'yan',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '法尔伽',
+                'eng': 'faerjia',
+                'el': 'feng',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '莉奈娅',
+                'eng': 'linaiya',
+                'el': 'yan',
+                'star': 5
+            },
+
+            // 2026 04 24
+            {
+                'type': 'peo',
+                'name': '尼可',
+                'eng': 'nike',
+                'el': 'huo',
+                'star': 5
+            },
+            {
+                'type': 'peo',
+                'name': '洛恩',
+                'eng': 'luoen',
+                'el': 'bing',
+                'star': 5
+            },
         ]
 
         const kni34 = [
-        {
-                'type': 'kni',     
+            {
+                'type': 'kni',
                 'name': '以理服人',
                 'eng': 'yilifuren',
-                'el': 'dajian',    
+                'el': 'dajian',
                 'star': 3
             },
             {
-                'type': 'kni',  
-                'name': '信使', 
+                'type': 'kni',
+                'name': '信使',
                 'eng': 'xinshi',
                 'el': 'gong',
                 'star': 3
@@ -1859,7 +3085,7 @@
                 'type': 'kni',
                 'name': '暗巷猎手',
                 'eng': 'anxianglieshou',
-                'el': '',
+                'el': 'gong',
                 'star': 4
             },
             {
@@ -2091,6 +3317,34 @@
             },
             {
                 'type': 'kni',
+                'name': '天空之脊',
+                'eng': 'tiankongzhiji',
+                'el': 'changbing',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '天空之卷',
+                'eng': 'tiankongzhijuan',
+                'el': 'faqi',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '天空之翼',
+                'eng': 'tiankongzhiyi',
+                'el': 'gong',
+                'star': 5
+            },
+            {
+                'type': 'kni',
+                'name': '天空之傲',
+                'eng': 'tiankongzhiao',
+                'el': 'dajian',
+                'star': 5
+            },
+            {
+                'type': 'kni',
                 'name': '万世流涌大典',
                 'eng': 'wanshiliuyongdadian',
                 'el': 'faqi',
@@ -2143,34 +3397,6 @@
                 'name': '圣显之钥',
                 'eng': 'shengxianzhiyao',
                 'el': 'dajian',
-                'star': 5
-            },
-            {
-                'type': 'kni',
-                'name': '天空之傲',
-                'eng': 'tiankongzhiao',
-                'el': 'dajian',
-                'star': 5
-            },
-            {
-                'type': 'kni',
-                'name': '天空之卷',
-                'eng': 'tiankongzhijuan',
-                'el': 'faqi',
-                'star': 5
-            },
-            {
-                'type': 'kni',
-                'name': '天空之翼',
-                'eng': 'tiankongzhiyi',
-                'el': 'gong',
-                'star': 5
-            },
-            {
-                'type': 'kni',
-                'name': '天空之脊',
-                'eng': 'tiankongzhiji',
-                'el': 'changbing',
                 'star': 5
             },
             {
@@ -2382,7 +3608,21 @@
                 'eng': 'feileizhixianzhen',
                 'el': 'gong',
                 'star': 5
-            }
+            },
+            {
+                'type': 'kni',
+                'name': '柔灯挽歌',
+                'eng': 'roudengwange',
+                'el': 'changbing',
+                'star': 5
+            },
+            // {
+            //     'type': 'kni',
+            //     'name': '冲浪时光',
+            //     'eng': 'chonglangshiguang',
+            //     'el': 'faqi',
+            //     'star': 5
+            // }
         ]
 
         var list = [].concat(peo4).concat(peo5).concat(kni34).concat(kni5)
@@ -2390,13 +3630,31 @@
         localStorage.getItem('history') == undefined ? localStorage.setItem('history', '[]') : ''
         const history = JSON.parse(localStorage.getItem('history'))
 
-        localStorage.getItem('ding') == undefined ? localStorage.setItem('ding', JSON.stringify({'eng': '', 'value': 0})) : ''
+        localStorage.getItem('ding') == undefined ? localStorage.setItem('ding', JSON.stringify({ 'eng': '', 'value': 0 })) : ''
         const ding = JSON.parse(localStorage.getItem('ding'))
 
         if (ding.eng == '') {
-            $('#dingtext').html('奔行定轨')
+            $('#dingtext').html('混乱定轨')
+            changecover()
         } else {
             $('#dingtext').html(`<span style="font-size: 1vw;color: rgb(255, 154, 0);">${ding.value}</span>/1`)
+            changecover(ding.eng )
+        }
+
+        localStorage.getItem('yuanshi') == undefined ? localStorage.setItem('yuanshi', '0') : ''
+        var yuanshi = parseInt(localStorage.getItem('yuanshi'))
+
+        localStorage.getItem('lanqiu') == undefined ? localStorage.setItem('lanqiu', '0') : ''
+        var lanqiu = parseInt(localStorage.getItem('lanqiu'))
+
+        $('#yuanshi').html(yuanshi)
+        $('#lanqiu').html(lanqiu)
+
+        if (lanqiu < 1) {
+            $('img[src="./static/po.png"]').attr('src', './static/por.png')
+        }
+        if (lanqiu < 10) {
+            $('img[src="./static/pt.png"]').attr('src', './static/ptr.png')
         }
     </script>
 </body>
