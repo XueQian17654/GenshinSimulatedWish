@@ -1,2 +1,9 @@
-.gitignore
-.gitattributes
+# Windows / 编辑器临时文件
+Thumbs.db
+Desktop.ini
+*.tmp
+*.bak
+*.swp
+
+# 本地备份
+wish copy.html
