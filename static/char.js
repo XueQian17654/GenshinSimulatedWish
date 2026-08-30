@@ -1435,8 +1435,8 @@ const char = [
         "eng": "Odette",
         "quality": "QUALITY_ORANGE",
         "banner": [
-            "",
-            "？？？"
+            "冰绡",
+            "鹄影"
         ]
     }
 ];

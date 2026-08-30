@@ -6,8 +6,8 @@
     <script src="./static/jquery.min.js"></script>
     <style>
         @font-face {
-            font-family: 'HYWenHei';
-            src: url('./static/HYWenHei-85W.ttf') format('truetype');
+            font-family: 'MyFont';
+            src: url('./static/MyFont.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
@@ -16,7 +16,7 @@
 
         * {
             cursor: url(./static/pict/cur.png), all-scroll;
-            font-family: 'HYWenHei';
+            font-family: 'MyFont';
             font-size: 1.5vw;
 
             transition: transform 0.2s;
@@ -1906,19 +1906,26 @@
             </div>
             <div id="historycontent" class="historycontent gun g2"></div>
             <script>
-                setTimeout(() => {
-                    const types = {
-                        'char': '角色',
-                        'weap': '武器',
-                        'arti': '圣遗物'
+                function summonhistory() {
+                    try {
+                        const types = {
+                            'char': '角色',
+                            'weap': '武器',
+                            'arti': '圣遗物'
+                        }
+                        var content = '<table style="margin: 2vw;width: 55vw;text-align: center;" bordercolor="#595252" border="1"><tr><th>类型</th><th>名称</th></tr>';
+                        for (var i = history.length - 1; i > -1; i--) {
+                            var thisitem = getengisobj(history[i]);
+                            content += `<tr style="color: ${color6[thisitem.quality]}"><td>${types[thisitem.type]}</td><td>${thisitem.name}</td></tr>`;
+                        }
+                        $('#historycontent').html(content);
+                    } catch (e) {
+                        localStorage.removeItem('history');
+                        alert('历史记录已损坏，已清空');
+                        window.location.reload();
                     }
-                    var content = '<table style="margin: 2vw;width: 55vw;text-align: center;" bordercolor="#595252" border="1"><tr><th>类型</th><th>名称</th></tr>';
-                    for (var i = history.length - 1; i > -1; i--) {
-                        var thisitem = getengisobj(history[i]);
-                        content += `<tr style="color: ${color6[thisitem.quality]}"><td>${types[thisitem.type]}</td><td>${thisitem.name}</td></tr>`;
-                    }
-                    $('#historycontent').html(content);
-                }, 200);
+                }
+                setTimeout(function check() { typeof all === 'undefined' ? setTimeout(check, 100) : summonhistory(); }, 200);
             </script>
         </div>
     </div>
