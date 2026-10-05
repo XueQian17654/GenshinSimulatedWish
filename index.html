@@ -89,6 +89,25 @@
             align-items: center;
         }
 
+        /* 主 UI 的三组（顶部信息 / 海报 / 底部 5 个按钮）：各自独立做入场、退场位移。
+           盒子做成和 #btnd 完全一致（inset:0 + 同样的 flex 居中），
+           所以组内那些绝对定位元素和靠 flex 居中的元素，位置一点都不会变。
+           注意：三个容器都是铺满整屏的透明盒子，谁排在后面谁就盖在上面，
+           会吃掉其它组元素的点击 —— 所以容器本身必须 pointer-events:none，
+           只在直接子元素上恢复 auto。 */
+        .uigroup {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .uigroup > * {
+            pointer-events: auto;
+        }
+
         button {
             border: 0;
             background: none;
@@ -186,23 +205,74 @@
             height: 31.75vw;
             /* border-radius: 3.8vw; */
 
-            background-position: center;
-            background-size: auto 100%;
-            background-repeat: repeat-x;
+            position: relative;
+            background-image: linear-gradient(#546981 10%, #bec5ab 35%, #bec5ab 60%, #546981 100%);
 
             justify-content: flex-end;
             align-items: center;
             flex-direction: column;
         }
 
-        .anallwai {
-            opacity: 0;
-            transform: scale(1);
-            transition: transform 0.1s;
+        /* 立绘之上的底部暗角（7.0 时它是 background 里 url() 前面的一层） */
+        .anall::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: linear-gradient(180deg, #0000 60%, #0009 100%);
         }
 
-        .anallwai:hover {
+        /* 立绘：原来是 .anall 的 background，现在独立成 img，方便单独加特效 */
+        .anall-art {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: drop-shadow(0.2vw 0.7vw 0 black);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 元素图标与星级要盖在立绘上面 */
+        .anall-elem {
+            position: relative;
+            z-index: 1;
+        }
+
+        .anall .starf {
+            position: relative;
+            z-index: 1;
+        }
+
+        .anallwai > .anall, .anallwai > .anallglow, .anallwai > .anall > .anall-art {
+            transform: scale(1);
+            /* transition: transform 0.2s; */
+        }
+
+        .anallwai > .anall, .anallwai > .anallglow, .anallwai > .anall-inset {
+            opacity: 0;
+        }
+
+        /* .anallwai:hover > .anall, .anallwai:hover > .anallglow {
             transform: scale(1.02);
+        }
+
+        .anallwai:hover > .anall > .anall-art {
+            transform: scale(1.07);
+        } */
+
+        /* 光晕层的形状层。clip-path 在 filter 之后生效，挂在同一个元素上会把 drop-shadow 自己切掉，
+           所以形状必须放在 .anallglow 内部；伪元素没法从 JS 设内联样式，这条只能写在样式表里，
+           形状用变量传（多边形仍然只在 JS 里写一份）。 */
+        .anallglow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #000;
+            clip-path: var(--cardshape);
         }
 
         .ding {
@@ -421,6 +491,196 @@
             background-position: 50%;
         }
     </style>
+    <script>
+        // PersistentHover
+        (function (global) {
+            'use strict';
+
+            const STYLE_ID = '__persistent-hover-styles__';
+            const instances = new WeakMap();
+            let uid = 0;
+
+            function getStyleTag() {
+                let tag = document.getElementById(STYLE_ID);
+                if (!tag) {
+                tag = document.createElement('style');
+                tag.id = STYLE_ID;
+                (document.head || document.documentElement).appendChild(tag);
+                }
+                return tag;
+            }
+
+            class PersistentHover {
+                constructor(el, hoverCss, options) {
+                let elements;
+
+                if (typeof el === 'string') {
+                elements = Array.from(document.querySelectorAll(el));
+                } else if (el instanceof Element) {
+                elements = [el];
+                } else if (el && typeof el.length === 'number') {
+                // NodeList / HTMLCollection / 数组
+                elements = Array.from(el);
+                } else {
+                elements = [];
+                }
+
+                if (elements.length === 0) {
+                throw new Error('[PersistentHover] 无效的元素');
+                }
+
+                // 多个元素
+                if (elements.length > 1) {
+                const list = elements.map(e => new PersistentHover(e, hoverCss, options));
+                return {
+                    instances: list,
+                    setCss(css) { list.forEach(i => i.setCss(css)); },
+                    forceReset() { list.forEach(i => i.forceReset()); },
+                    destroy() { list.forEach(i => i.destroy()); }
+                };
+                }
+
+                // 单个元素
+                el = elements[0];
+
+                // ---- 参数解析 ----
+                let opts = {};
+                if (typeof options === 'number') {
+                    opts.duration = options;
+                } else if (options && typeof options === 'object') {
+                    opts = options;
+                }
+
+                const duration   = typeof opts.duration === 'number' ? opts.duration : 200;
+                const easing     = opts.easing     || 'ease';       // 统一曲线
+                const easingIn   = opts.easingIn   || easing;       // 进入曲线（可单独覆盖）
+                const easingOut  = opts.easingOut  || easing;       // 离开曲线（可单独覆盖）
+                const properties = opts.properties || 'all';        // 参与过渡的属性
+                const delay      = typeof opts.delay === 'number' ? opts.delay : 0;
+
+                // 用户可传完整 transition；否则按上面参数拼
+                // 进入和离开用不同曲线时，需要分别写
+                const sameEasing = easingIn === easingOut;
+                const transitionIn  = opts.transition || `${properties} ${duration}ms ${easingIn} ${delay}ms`;
+                const transitionOut = sameEasing
+                    ? transitionIn
+                    : `${properties} ${duration}ms ${easingOut} ${delay}ms`;
+
+                // ---- 同元素重复初始化：先销毁旧的 ----
+                const prev = instances.get(el);
+                if (prev) prev.destroy();
+
+                // ---- 注入独立样式 ----
+                const id = ++uid;
+                const baseClass   = `__ph-base-${id}`;
+                const activeClass = `__ph-active-${id}`;
+
+                function buildCss(css) {
+                    const baseSel   = `.${baseClass}`;
+                    const activeSel = `.${baseClass}.${activeClass}`;
+                    return `
+${baseSel},
+${baseSel} * {
+transition: ${transitionOut};
+}
+${activeSel},
+${activeSel} * {
+transition: ${transitionIn};
+}
+${css.replace(/&/g, activeSel)}
+`;
+                }
+
+                const styleEl = document.createElement('style');
+                styleEl.textContent = buildCss(hoverCss);
+                getStyleTag().appendChild(styleEl);
+
+                el.classList.add(baseClass);
+
+                // ---- 状态机 ----
+                let hovering = false;
+                let locked = false;
+                let timer = null;
+
+                // 锁定时长 = duration + delay + 容错
+                const lockMs = duration + delay + 30;
+
+                function lock() {
+                    locked = true;
+                    if (timer) clearTimeout(timer);
+                    timer = setTimeout(() => {
+                    timer = null;
+                    locked = false;
+                    sync();
+                    }, lockMs);
+                }
+
+                function unlock() {
+                    if (timer) { clearTimeout(timer); timer = null; }
+                    locked = false;
+                    sync();
+                }
+
+                function sync() {
+                    if (locked) return;
+                    const isActive = el.classList.contains(activeClass);
+
+                    if (hovering && !isActive) {
+                    el.classList.add(activeClass);
+                    lock();
+                    } else if (!hovering && isActive) {
+                    el.classList.remove(activeClass);
+                    lock();
+                    }
+                }
+
+                // ---- 事件 ----
+                const onEnter = () => { hovering = true;  sync(); };
+                const onLeave = () => { hovering = false; sync(); };
+
+                el.addEventListener('mouseenter', onEnter);
+                el.addEventListener('mouseleave', onLeave);
+
+                // ---- 实例 ----
+                const self = {
+                    el,
+                    get hovering() { return hovering; },
+                    get locked()   { return locked; },
+                    get active()   { return el.classList.contains(activeClass); },
+
+                    setCss(newCss) {
+                    styleEl.textContent = buildCss(newCss);
+                    },
+
+                    forceReset() {
+                    hovering = false;
+                    unlock();
+                    },
+
+                    destroy() {
+                    el.removeEventListener('mouseenter', onEnter);
+                    el.removeEventListener('mouseleave', onLeave);
+                    if (timer) clearTimeout(timer);
+                    el.classList.remove(baseClass, activeClass);
+                    if (styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+                    instances.delete(el);
+                    }
+                };
+
+                instances.set(el, self);
+                return self;
+                }
+
+                static destroy(el) {
+                if (typeof el === 'string') el = document.querySelector(el);
+                const inst = el && instances.get(el);
+                if (inst) inst.destroy();
+                }
+            }
+
+            global.PersistentHover = PersistentHover;
+            })(window);
+    </script>
 </head>
 
 <body style="margin: 0; overflow: hidden;">
@@ -431,6 +691,85 @@
                 <feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="5" />
                 <feComposite operator="arithmetic" k1="0" k2="2" k3="-0.01" k4="0" in="SourceGraphic" in2="blurOut" />
             </filter>
+        </defs>
+    </svg>
+
+    <!-- Define B Filter(inset shafow) -->
+    <svg width="0" height="0"
+        style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;"
+        aria-hidden="true">
+        <defs>
+
+            <!-- ========= ORANGE #ffd770 ========= -->
+            <filter id="anall-inset-QUALITY_ORANGE"
+                    x="-25%" y="-25%" width="150%" height="150%"
+                    color-interpolation-filters="sRGB">
+            <feComponentTransfer in="SourceAlpha" result="inv">
+                <feFuncA type="table" tableValues="1 0"/>
+            </feComponentTransfer>
+            <feGaussianBlur in="inv" stdDeviation="5 4" result="blur"/>
+            <feOffset in="blur" dx="0" dy="12.8"  result="o1"/>
+            <feComposite in="o1" in2="SourceAlpha" operator="in" result="i1"/>
+            <feOffset in="blur" dx="0" dy="-12.8" result="o2"/>
+            <feComposite in="o2" in2="SourceAlpha" operator="in" result="i2"/>
+            <feMerge result="inner">
+                <feMergeNode in="i1"/>
+                <feMergeNode in="i2"/>
+            </feMerge>
+            <!-- 上色：R/G/B 常数 + alpha 衰减 -->
+            <feColorMatrix in="inner" type="matrix" values="
+                0 0 0 0 1
+                0 0 0 0 0.843
+                0 0 0 0 0.439
+                0 0 0 0.85 0"/>
+            </filter>
+
+            <!-- ========= PURPLE #a494ff ========= -->
+            <filter id="anall-inset-QUALITY_PURPLE"
+                    x="-25%" y="-25%" width="150%" height="150%"
+                    color-interpolation-filters="sRGB">
+            <feComponentTransfer in="SourceAlpha" result="inv">
+                <feFuncA type="table" tableValues="1 0"/>
+            </feComponentTransfer>
+            <feGaussianBlur in="inv" stdDeviation="5 4" result="blur"/>
+            <feOffset in="blur" dx="0" dy="3.2"  result="o1"/>
+            <feComposite in="o1" in2="SourceAlpha" operator="in" result="i1"/>
+            <feOffset in="blur" dx="0" dy="-3.2" result="o2"/>
+            <feComposite in="o2" in2="SourceAlpha" operator="in" result="i2"/>
+            <feMerge result="inner">
+                <feMergeNode in="i1"/>
+                <feMergeNode in="i2"/>
+            </feMerge>
+            <feColorMatrix in="inner" type="matrix" values="
+                0 0 0 0 0.643
+                0 0 0 0 0.580
+                0 0 0 0 1
+                0 0 0 0.80 0"/>
+            </filter>
+
+            <!-- ========= BLUE #4290ef ========= -->
+            <filter id="anall-inset-QUALITY_BLUE"
+                    x="-25%" y="-25%" width="150%" height="150%"
+                    color-interpolation-filters="sRGB">
+            <feComponentTransfer in="SourceAlpha" result="inv">
+                <feFuncA type="table" tableValues="1 0"/>
+            </feComponentTransfer>
+            <feGaussianBlur in="inv" stdDeviation="5 4" result="blur"/>
+            <feOffset in="blur" dx="0" dy="0.8"  result="o1"/>
+            <feComposite in="o1" in2="SourceAlpha" operator="in" result="i1"/>
+            <feOffset in="blur" dx="0" dy="-0.8" result="o2"/>
+            <feComposite in="o2" in2="SourceAlpha" operator="in" result="i2"/>
+            <feMerge result="inner">
+                <feMergeNode in="i1"/>
+                <feMergeNode in="i2"/>
+            </feMerge>
+            <feColorMatrix in="inner" type="matrix" values="
+                0 0 0 0 0.259
+                0 0 0 0 0.565
+                0 0 0 0 0.937
+                0 0 0 0.55 0"/>
+            </filter>
+
         </defs>
     </svg>
 
@@ -565,10 +904,13 @@
     </dialog>
 
     <!-- Main Background -->
-    <div style="position: absolute;"><img src="./static/pict/background.png" style="width: 100vw;"></div>
+    <div style="position: absolute;">
+        <img id="mainbg" src="./static/pict/background.png" style="width: 100vw;opacity: 0;transition: opacity 0.3s;" onload="this.style.opacity = 1;">
+    </div>
 
     <!-- Main UI -->
-    <div id="btnd" style="opacity: 0;translate: 4vw 0;transition: translate 0.2s ease;">
+    <div id="btnd" style="opacity: 0;">
+        <div class="uigroup" id="uitop">
         <div style="position: absolute;top: 1.5vw;left: 3vw;display: flex;align-items: center;">
             <img src="./static/pict/icon.png" style="width: 3vw;height: 3vw;">
             <a style="font-size: 1.5vw;color: #fff;text-shadow: 0.1vw 0.1vw 0.2vw black;">&nbsp;&nbsp;&nbsp;&nbsp;祈愿</a>
@@ -614,16 +956,18 @@
             <img src="./static/pict/close.png" style="width: 3vw;" onclick="$('#adingopen')[0].play();$('#setting')[0].showModal();">
             <!-- onclick="if (document.fullscreenElement === null) {$('body')[0].requestFullscreen();} else {document.exitFullscreen();}" -->
         </div>
+        </div>
 
         <!-- 封面制作 -->
+        <div class="uigroup" id="uiposter">
         <img src="./static/pict/wishback.png" style="width: 67.42vw;position: absolute;translate: 0.3vw 0vw;">
         <img id="wishbackel" src="./static/pict/wishbackel.png" style="width: 67.68vw;position: absolute;translate: 0.23vw -0.29vw;border-radius: 0 0.4vw 0.4vw 0;filter: saturate(0) brightness(1.5);">
 
         <div style="width: 100vw;height: 56.25vw;display: flex;justify-content: center;align-items: center;clip-path: inset(10.6875vw 16.02vw 10.63125vw 16.64vw round 0.4vw 0.4vw 0.4vw 0.4vw);-webkit-mask-image: linear-gradient(to left, #000000 70vw, hsl(0deg 0% 0% / 10%) 80vw);mask-image: linear-gradient(to left, #000000 70vw, hsl(0deg 0% 0% / 10%) 80vw);">
-            <img id="ding5" src="" style="width: 106.7vw;position: absolute;translate: 1.4vw 4.13vw;" onerror="this.src='./static/pict/question.png';">
-            <img id="ding41" src="" style="width: 76vw;position: absolute;translate: 26.4vw -3.8vw;" onerror="this.src='';">
-            <img id="ding42" src="" style="width: 74.5vw;position: absolute;translate: 32vw 0.35vw;" onerror="this.src='';">
-            <img id="ding43" src="" style="width: 90.5vw;position: absolute;translate: 24.86vw 11.79vw;" onerror="this.src='';">
+            <img id="ding5" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==" style="width: 106.7vw;position: absolute;translate: 1.4vw 4.13vw;" onerror="this.src='./static/pict/question.png';">
+            <img id="ding41" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==" style="width: 76vw;position: absolute;translate: 26.4vw -3.8vw;" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==';">
+            <img id="ding42" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==" style="width: 74.5vw;position: absolute;translate: 32vw 0.35vw;" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==';">
+            <img id="ding43" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==" style="width: 90.5vw;position: absolute;translate: 24.86vw 11.79vw;" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==';">
         </div>
 
         <a style="position: absolute;font-size: 4vw;translate: calc(-30.9vw + 50%) -10.7vw;-webkit-text-stroke: 0.02vw white;">
@@ -632,13 +976,14 @@
         <div id="nameback" style="position: absolute;width: 13.4vw;height: 3.3vw;background-color: rgb(0 0 0 / 70%);translate: calc(3vw + 50%) 9.6vw;"></div>
         <div id="covertitle" style="position: absolute;padding-left: 0.6vw;padding-right: 0.6vw;translate: calc(4.9vw + 50%) 12.1vw;background-color: #38425c;color: #d3bc8e;font-size: 1.1vw;display: flex;justify-content: center;align-items: center;"></div>
         <div style="position: absolute;translate: 3vw 7.8vw;box-shadow: 0 0 20px 13px black;"></div>
-        <img id="coverele" src="" style="width: 4.5vw;position: absolute;translate: 3vw 7.8vw;filter: brightness(1.1);">
+        <img id="coverele" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==" style="width: 4.5vw;position: absolute;translate: 3vw 7.8vw;filter: brightness(1.1);">
         <a id="covername" style="position: absolute;translate: calc(5.55vw + 50%) 7.8vw;color: white;font-size: 3.21vw;text-shadow: 0 0 3.5px black;"></a>
         <a id="coverstar" class="starf" style="position: absolute;text-shadow: none;font-size: 1.65vw;filter: blur(0.3px);translate: 8.7vw 11.8vw;"></a>
 
         <img id="wishforeel" src="./static/pict/wishbackel.png" style="width: 67.68vw;position: absolute;translate: 0.23vw -0.29vw;border-radius: 0px 0.4vw 0.4vw 0px;filter: hue-rotate(202deg) saturate(0.6) brightness(1.4);-webkit-mask-image: linear-gradient(to right, #000000 20vw, #00000000 20vw);mask-image: linear-gradient(to right, #000000 20vw, #00000000 20vw);">
 
         <a id="dingtype" style="position: absolute;font-size: 1.29vw;translate: calc(-32.9vw + 50%) -16.6vw;color: #fff;font-size: 1.2vw;">角色</a>
+        </div>
         <!-- style="position: absolute;font-size: 1.29vw;translate: calc(-33.03vw + 50%) -16.61vw;color: #fff;" -->
 
         <script>
@@ -752,13 +1097,14 @@
                             $(item.selector).attr('src', './static/pict/question.png');
                         }
                     } else {
-                        $(item.selector).attr('src', '');
+                        $(item.selector).attr('src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==');
                     }
                 });
             }
         </script>
 
         <!-- 抽卡按钮 -->
+        <div class="uigroup" id="uibottom">
         <div style="height: fit-content;position: absolute;right: 3vw;bottom: 2vw;">
             <button id="wish">
                 <img src="./static/pict/po.png" style="width: 18.2vw;">
@@ -773,8 +1119,10 @@
             <button class="control" id="xq">详情</button>
             <button class="control" id="lsjl">历史记录</button>
         </div>
+        </div>
         <script>
             $('#xcdh').click(() => {
+                uiExit();                                   // 三组按各自方向退出（海报往右、按钮往下、顶部往上）
                 $('#shopsound')[0].play();
                 $('#shoppage')[0].style.display = 'flex';
                 var shopani = $('#shoppage')[0].animate([{
@@ -795,6 +1143,7 @@
                 }, 500);
             });
             $('#xq').click(() => {
+                uiExit();
                 $('#gelong')[0].play();
 
                 var black = $('html')[0].animate([{
@@ -814,6 +1163,7 @@
                 }, 500);
             });
             $('#lsjl').click(() => {
+                uiExit();
                 $('#gelong')[0].play();
 
                 var black = $('html')[0].animate([{
@@ -1046,12 +1396,35 @@
     <script>
         var c9 = `<img src="./static/pict/close.png" style="position: absolute;" onclick="$('#dongting')[0].play();location.reload()">`;
         for (let i = 0; i < 10; i++) {
-            c9 += `<div><div class="anall">
-            <img src="" style="width: 4vw;">
-            <a class="starf"></a>
-        </div></div>`
+            c9 += `<div class="anallwai">
+    <div class="anallglow"></div>
+    <div class="anall">
+        <img class="anall-art" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==" alt="">
+        <img class="anall-elem" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAAnAAAAJwEqCZFPAAAADUlEQVQImWP4//8/AwAI/AL+hc2rNAAAAABJRU5ErkJggg==" style="width: 4vw;">
+        <a class="starf"></a>
+    </div>
+    <svg class="anall-inset" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <polygon
+            filter="url(#LadySandrone)"
+            fill="#000"
+            points="0,11 5,9.5 20,8 25,3.5 50,0 75,3.5 80,8 95,9.5 100,11 100,89 95,90.5 80,92 75,96.5 50,100 25,96.5 20,92 5,90.5 0,89"
+        />
+    </svg>
+</div>`
         }
         $('#allinall').html(c9);
+        $('#allinall').css('zIndex', 0);
+
+        // 应用高级 hover
+        new PersistentHover('.anallwai', `
+& > .anall { transform: scale(1.02); }
+& > .anallglow { transform: scale(1.02); }
+& > .anall-inset { transform: scale(1.02);opacity: 1; }
+
+& > .anall > .anall-art { transform: scale(1.07); }
+`, {
+            duration: 200,
+        });
     </script>
 
     <!-- Sound Assets -->
@@ -1616,30 +1989,43 @@
             li = [...c5, ...w5, ...a5, ...c4, ...w4, ...a4, ...c3, ...w3, ...a3];
 
             map = new Map();
+            const CARDSHAPE = 'polygon(0% 11%, 5% 9.5%, 20% 8%, 25% 3.5%, 50% 0%, 75% 3.5%, 80% 8%, 95% 9.5%, 100% 11%, 100% 89%, 95% 90.5%, 80% 92%, 75% 96.5%, 50% 100%, 25% 96.5%, 20% 92%, 5% 90.5%, 0% 89%)';
             for (let i = 0; i < 10; i++) {
                 let x = $(document.querySelectorAll('.anall')[i]);
-                x.css('clip-path', 'polygon(0% 11%, 5% 9.5%, 20% 8%, 25% 3.5%, 50% 0%, 75% 3.5%, 80% 8%, 95% 9.5%, 100% 11%, 100% 89%, 95% 90.5%, 80% 92%, 75% 96.5%, 50% 100%, 25% 96.5%, 20% 92%, 5% 90.5%, 0% 89%)');
+                x.css('clip-path', CARDSHAPE);
                 var imgUrl = './static/' + (li[i].type == 'char' ? `char/${li[i].eng}2.png` : `${li[i].type}/${li[i].eng}.png`);
-                x.css('backgroundImage', 'linear-gradient(180deg, #0000 60%, #0009 100%), url(' + imgUrl + '), linear-gradient(180deg, #516883 10%, #bec5ab 45%, #bec5ab 55%, #516883 100%)');
 
-                var probe = new Image();
-                probe.onerror = () => x.css('backgroundImage', 'linear-gradient(180deg, #0000 60%, #0009 100%), url(./static/elem/Unknown.png), linear-gradient(180deg, #516883 10%, #bec5ab 45%, #bec5ab 55%, #516883 100%)');
-                probe.src = imgUrl;
+                // 立绘：独立 img（原来是 .anall 的 background）
+                var art = x.find('.anall-art');
+                art.off('error').on('error', () => art.attr('src', './static/elem/Unknown.png'));
+                art.attr('src', imgUrl);
+                // 角色/武器：铺满并居中裁切；圣遗物是方形图标，整张放下居中
+                art.css('objectFit', li[i].type == 'arti' ? 'contain' : 'cover');
 
-                x.parent().css('filter', `drop-shadow(0.1vw 0.1vw 0 white) drop-shadow(-0.05vw -0.05vw 0 white) drop-shadow(-0.05vw 0.05vw 0 white) drop-shadow(0.05vw -0.05vw 0 white) ` + `drop-shadow(${color2[li[i].quality]} 0 ${(4 ** (str2int[li[i].quality] - 3)) * 0.2}vw 2vw) drop-shadow(${color2[li[i].quality]} 0 -${(4 ** (str2int[li[i].quality] - 3)) * 0.2}vw 2vw)`);
-                x.parent().css('zIndex', 20 - i);
-                x.parent()[0].classList.add('anallwai');
-                if (li[i].type == 'arti') {  // li[i].type == 'weap' && li[i].elem == 'Catalyst' || 
-                    x.css('backgroundSize', '100%');
-                } else if (li[i].type == 'weap') {
-                    x.css('backgroundSize', 'auto 100%');
-                }
+                // 白描边 + 彩色光晕整条搬到独立光晕层：挂 z-index:-1 后由 #allinall 的负层收走，
+                // 于是所有光晕都在所有卡片内容之下，永远不会盖到右边的卡；.anall 盖住它的实心形状
+                x.parent().css('position', 'relative');
+                x.parent()[0].style.setProperty('--cardshape', CARDSHAPE);
+                
+                // 外发光简单版，之后将改用canvas做更逼真的效果。
+                // x.parent().css('clipPath', 'polygon(100% 11%, 105% 9.5%, 120% 8%, 125% 3.5%, 150% 0%, 175% 3.5%, 180% 8%, 195% 9.5%, 1000% -1000%, -1000% -1000%, -1000% 1000%, 1000% 1000%, 195% 90.5%, 180% 92%, 175% 96.5%, 150% 100%, 125% 96.5%, 120% 92%, 105% 90.5%, 100% 89%)');
+                var glow = x.parent().children('.anallglow');
+                glow.css({ position: 'absolute', inset: '0.1vw', zIndex: -1 });
+                glow.css('filter', `drop-shadow(0.1vw 0.1vw 0 white) drop-shadow(-0.05vw -0.05vw 0 white) drop-shadow(-0.05vw 0.05vw 0 white) drop-shadow(0.05vw -0.05vw 0 white) ` + `drop-shadow(${color2[li[i].quality]} 0 ${(4 ** (str2int[li[i].quality] - 3)) * 0.2}vw 2vw) drop-shadow(${color2[li[i].quality]} 0 -${(4 ** (str2int[li[i].quality] - 3)) * 0.2}vw 2vw)`);
 
-                $(x.children()[0]).attr('src', `./static/elem/${li[i].elem}.png`);
-                $(x.children()[0]).css('filter', li[i].type == 'weap' ? 'brightness(5)' : 'brightness(1.1)');
-                $(x.children()[1]).html('★'.repeat(str2int[li[i].quality]));
+                // 内发光
+                var insetdom = x.parent().children('.anall-inset');
+                insetdom.css({ position: 'absolute', inset: '0', zIndex: 5, width: '100%', height: '100%' });
+                insetdom.children('polygon').attr('filter', `url(#anall-inset-${li[i].quality})`)
 
-                let a = document.querySelectorAll('.anallwai')[i].animate([{
+                var em = x.find('.anall-elem');
+                em.attr('src', `./static/elem/${li[i].elem}.png`);
+                em.css('filter', li[i].type == 'weap' ? 'brightness(5)' : 'brightness(1.1)');
+                li[i].type == 'arti' ? em.css('mixBlendMode', 'screen') : undefined;
+                x.find('.starf').html('★'.repeat(str2int[li[i].quality]));
+
+                // 入场动画只能打在这两层上：格子一旦有 opacity<1 或 transform，就又会变成层叠上下文，光晕会被困住
+                let a = [x[0].animate([{
                     opacity: 0,
                     translate: '15vw 0'
                 }, {
@@ -1649,15 +2035,51 @@
                     duration: 300,
                     easing: 'ease-out',  // ease-out cubic-bezier(0.8, 0.2, 1, 1)
                     fill: 'forwards'
-                });
-                a.pause();
+                })];
+
+                a.push(glow[0].animate([{
+                    translate: '15vw 0'
+                }, {
+                    translate: '0 0'
+                }], {
+                    duration: 300,
+                    easing: 'ease-out',
+                    fill: 'none'
+                }));
+
+                a.push(glow[0].animate([{
+                    opacity: 0
+                }, {
+                    opacity: 0
+                }, {
+                    opacity: 1
+                }], {
+                    duration: 400,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                }));
+
+                // 内发光层不能和上面一起打动画，因为内发光层的 opacity 不能被动画控制。
+                a.push(insetdom[0].animate([{
+                    opacity: 0,
+                    translate: '15vw 0'
+                }, {
+                    opacity: 0,
+                    translate: '0 0'
+                }], {
+                    duration: 300,
+                    easing: 'ease-out',
+                    fill: 'none'
+                }));
+
+                a.forEach(z => z.pause());
 
                 map.set(i, a);
             }
 
             $(document).ready(() => {
                 for (let i = 0; i < 10; i++) {
-                    setTimeout((p) => { map.get(p).play(); }, 80 * i, i);
+                    setTimeout((p) => { map.get(p).forEach(z => z.play()); }, 80 * i, i);
                 }
 
                 $('#people')[0].animate([{
@@ -1781,25 +2203,71 @@
             localStorage.setItem('history', JSON.stringify(history.concat(eng)));
             localStorage.setItem('ding', JSON.stringify(ding));
 
-            $('#bb').css('display', 'block');
-            $('video')[0].childNodes[1].src = `./static/286932797/${num == 10 ? 't' : 'o'}${str2int[items.highestStar]}${items.buhuo5 ? '-b' : ''}.mp4`;
-            $('video').load();
+            // 到这里才是真的抽出来了（上面缘分不够已经 return），这时才知道该放哪个 mp4：
+            // 先按各自方向把 UI 滑走（加载期间只留背景），同时开始加载视频，加载完再播
+            uiExit();
 
-            $('#video')[0].style.display = 'block';
-            $('#video')[0].animate([{
-                opacity: 0
-            }, {
-                opacity: 1
-            }], {
-                duration: 100,
-                easing: 'ease-out',
-                fill: 'forwards'
+            var v = $('video')[0];
+            v.pause();
+            var clip = `./static/286932797/${num == 10 ? 't' : 'o'}${str2int[items.highestStar]}${items.buhuo5 ? '-b' : ''}.mp4`;
+
+            var wishVideoStarted = false;
+            function startWishVideo() {
+                if (wishVideoStarted) return;
+                wishVideoStarted = true;
+                $('#bb').css('display', 'block');
+                $('#video')[0].style.display = 'block';
+                $('#video')[0].animate([{
+                    opacity: 0
+                }, {
+                    opacity: 1
+                }], {
+                    duration: 100,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                });
+                v.play();
+                $('#get')[0].play();
+            }
+
+            // 视频加载：两种协议走不同路子，但闸门统一是"整段都进缓冲了"。
+            //  - file:// : fetch 会被 CORS 拦（file: 是独立源），只能直接用 src；
+            //              本地是整段读盘，实测 buffered 会覆盖到 duration
+            //  - http(s): 服务端支持 Range，src 直连时浏览器只按需抓一小段（就是那个 393KB），
+            //              "整段缓冲"永远等不到；所以先 fetch 进内存，再喂一个 blob URL
+            // 加载期间 #bb 和视频都还没显示，看到的是背景 + 已滑走的 UI。一直等，没有超时兜底。
+            function wishVideoFullyBuffered() {
+                return v.buffered.length > 0 && isFinite(v.duration) && v.duration > 0 &&
+                    v.buffered.end(v.buffered.length - 1) >= v.duration - 0.05;
+            }
+            function checkWishVideoBuffered() {
+                if (wishVideoFullyBuffered()) {
+                    ['progress', 'durationchange', 'loadedmetadata', 'canplaythrough'].forEach(function (ev) {
+                        v.removeEventListener(ev, checkWishVideoBuffered);
+                    });
+                    startWishVideo();
+                }
+            }
+            // 先挂监听再开始加载，否则 file:// 下加载太快会漏掉事件
+            ['progress', 'durationchange', 'loadedmetadata', 'canplaythrough'].forEach(function (ev) {
+                v.addEventListener(ev, checkWishVideoBuffered);
             });
 
-            setTimeout(() => {
-                $('video')[0].play();
-                $('#get')[0].play();
-            }, 100);
+            if (location.protocol === 'file:') {
+                v.src = clip;
+            } else {
+                fetch(clip).then(function (r) {
+                    if (!r.ok) throw new Error(clip + ' -> HTTP ' + r.status);
+                    return r.blob();
+                }).then(function (blob) {
+                    if (window.__wishClipUrl) URL.revokeObjectURL(window.__wishClipUrl);  // 释放上一段
+                    window.__wishClipUrl = URL.createObjectURL(blob);
+                    v.src = window.__wishClipUrl;
+                })['catch'](function (e) {
+                    // 只有加载失败（文件缺失/HTTP 错误）才会走到这里 —— 慢不算失败，慢就一直等
+                    console.error('抽卡视频加载失败：', e);
+                });
+            }
 
             document.querySelector('video').addEventListener('ended', function () {
             // waitvideo = setTimeout(() => {
@@ -1834,6 +2302,8 @@
 
         }
 
+        // 注意：这里不能隐藏 UI —— 是否真的抽要看 wish() 里的缘分够不够，
+        // 不够会弹"尘辉兑换"对话框然后 return，那种情况 UI 不该动
         $('#wish').click(() => { wish(1); });
         $('#wish10').click(() => { wish(10); });
 
@@ -1855,7 +2325,7 @@
 
     <!-- Detail -->
     <div id="detail" class="historypage" style="display: none;">
-        <img src="./static/pict/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#detail').css('display', 'none');">
+        <img src="./static/pict/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#detail').css('display', 'none');uiEnter();">
 
         <div class="historybox">
             <div class="historytitle">
@@ -1869,7 +2339,7 @@
             <div id="detailcontent" class="historycontent gun g2"></div>
             <script>
                 const detail = '<p> 祈愿详情 </p> <p> 永久 </p> <div>「乱七<span style="color: #ff7418">八糟</span>」常驻祈愿为永久性祈愿活动，玩家可以抽取非限定角色与武器。 在本祈愿内，每10次祈愿<span style="color: #c93f23">必会</span>获得至少1个4星或以上物品。 <br><p></p> ※一般情况下所有角色或武器均适用基础概率，如触发概率UP、保底等以具体规则为准。 <br><p></p> 〓祈愿规则〓 5星物品祈愿的基础概率为<span style="color: #c93f23">0.600%</span>，5星角色祈愿的基础概率为<span style="color: #c93f23">0.300%</span>，5星武器祈愿的基础概率为<span style="color: #c93f23">0.300%</span>，5星物品祈愿综合概率（含保底）为<span style="color: #c93f23">1.600%</span>，最多<span style="color: #c93f23">90</span>次祈愿必定能通过保底获取5星物品。 4星物品祈愿的基础概率为<span style="color: #c93f23">5.100%</span>，4星角色祈愿的基础概率为<span style="color: #c93f23">2.550%</span>，4星武器祈愿的基础概率为<span style="color: #c93f23">2.550%</span>，4星物品祈愿的综合概率（含保底）为<span style="color: #c93f23">13.000%</span>。最多<span style="color: #c93f23">10</span>次祈愿必定能通过保底获取4星或以上物品，通过保底获取4星物品的概率为<span style="color: #c93f23">99.400%</span>，获取5星物品的概率为<span style="color: #c93f23">0.600%</span>。 祈愿获得5星武器时，会同时获得10个<span style="color: #bd6932">无主的星辉</span>作为副产物；获得4星武器时，会同时获得2个<span style="color: #bd6932">无主的星辉</span>作为副产物；获得3星武器时，会同时获得15个<span style="color: #a256e1">无主的星尘</span>作为副产物。 <br><p></p> 〓若获得重复角色〓 无论通过何种方式（包含但不限于祈愿、商城兑换、系统赠送等）第2~7次获得相同5星角色时，每次将转化为1个<span style="color: #a256e1">对应角色的命星</span>和10个<span style="color: #bd6932">无主的星辉</span>；第8次及之后获得，将仅转化为25个<span style="color: #bd6932">无主的星辉</span>。 无论通过何种方式（包含但不限于祈愿、商城兑换、系统赠送等）第2~7次获得相同4星角色时，每次将转化为1个<span style="color: #a256e1">对应角色的命星</span>和2个<span style="color: #bd6932">无主的星辉</span>；第8次及之后获得，将仅转化为5个<span style="color: #bd6932">无主的星辉</span>。</div>';
-                const itemslist = '';
+                const itemslist = '<p style="margin-bottom: 0;"> 物品清单 </p><p>《原神》作品中的所有自机角色、所有武器（品质大于<span style="color: #17b148;">2星【品质·绿】</span>）、所有圣遗物（品质大于<span style="color: #17b148;">2星【品质·绿】</span>，多品质圣遗物品质取最高品质）</p><br><p style="margin-bottom: 0;"> 物品品质（从高到低） </p><p><span style="color: #c93f23;">5星【品质·红】</span>、<span style="color: #bd6932;">5星【品质·橙】</span>、<span style="color: #a256e1;">4星【品质·紫】</span>、<span style="color: #188de3;">3星【品质·蓝】</span>、<span style="color: #17b148;">2星【品质·绿】</span>、<span style="color: #747474;">1星【品质·白】</span>、<span style="color: #747474;">无【品质·白】</span></p>';
                 $('#detailcontent').html(detail);
 
                 $('#h1').click(() => {
@@ -1888,13 +2358,13 @@
 
     <!-- Shop -->
     <div id="shoppage" class="historypage" style="display: none;">
-        <img src="./static/pict/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#shoppage').css('display', 'none');">
+        <img src="./static/pict/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#shoppage').css('display', 'none');uiEnter();">
         <img src="./static/pict/shop.png" style="width: 100vw;height: 56.25vw;">
     </div>
 
     <!-- History -->
     <div id="historypage" class="historypage" style="display: none;">
-        <img src="./static/pict/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#historypage').css('display', 'none');">
+        <img src="./static/pict/close.png" style="position: absolute;top: 1.5vw;right: 3vw;width: 3vw;" onclick="$('#historypage').css('display', 'none');uiEnter();">
 
         <div class="historybox">
             <div class="historytitle">
@@ -1937,6 +2407,18 @@
     <script>
         const all = char.concat(weap, arti);
         const changzhu = ['Diluc', 'Qin', 'Qiqi', 'Keqing', 'Mona', 'Tighnari', 'Dehya', 'Mizuki', 'Bow_Dvalin', 'Pole_Dvalin', 'Claymore_Dvalin', 'Sword_Dvalin', 'Catalyst_Dvalin', 'Bow_Amos', 'Pole_Morax', 'Claymore_Wolfmound', 'Sword_Falcon', 'Catalyst_Fourwinds', '15001_1', '15001_2', '15001_3', '15001_4', '15001_5', '15003_1', '15003_2', '15003_3', '15003_4', '15003_5'];
+    </script>
+
+    <script>
+        // Important
+        function EnsureNoScrolling() {
+            document.querySelector('body').style.overflow = 'scroll';
+            window.scrollTo(0, 0);
+            document.querySelector('body').style.overflow = 'hidden';
+            return 0;
+        }
+
+        addEventListener('resize', EnsureNoScrolling);
     </script>
 
     <script>
@@ -1997,12 +2479,81 @@
             $('.ding').css('display', 'none');
         }
 
-        // 初始化结束
-        setTimeout(() => {
-            $('#btnd').animate({ 'opacity': '1' }, 200);
-            $('#copydiv').animate({ 'opacity': '1' }, 200);
-            $('#btnd').css({ 'translate': '0' });
-        }, 10);
+        // 主 UI 三组的位移：入场从屏幕外滑到位，退场滑回屏幕外（方向与入场对称相反）。
+        // 用 transform 而不是 translate 属性 —— 海报里大量元素靠 translate 属性定位，
+        // 动画若改 translate 会把它们的位置覆盖掉；transform 是独立属性，互不干扰。
+        // 距离/时长照搬你原来那版 #btnd 的淡入：translate 4vw、0.2s、ease。
+        // 用视口单位而不是百分比：百分比是相对「元素自身尺寸」的，
+        // 像 .ding 只有 8vw 宽，translateX(100%) 只会挪 8vw，三组位移量就不一致了。
+        var UIGROUPS = {
+            poster: { move: 'translateX(4vw)', els: ['#uiposter', '.ding'] },   // 海报：右 -> 原处 / 原处 -> 右
+            bottom: { move: 'translateY(4vw)', els: ['#uibottom'] },            // 5 个按钮：下 -> 原处 / 原处 -> 下
+            top: { move: 'translateY(-4vw)', els: ['#uitop'] }                  // 顶部信息：上 -> 原处 / 原处 -> 上
+        };
+        function uiAnimate(phase, duration) {
+            Object.keys(UIGROUPS).forEach(function (k) {
+                var g = UIGROUPS[k];
+                g.els.forEach(function (sel) {
+                    var el = document.querySelector(sel);
+                    if (!el) return;
+                    // 释放上一次动画 fill 锁住的 transform，否则下一轮动不了
+                    el.getAnimations().forEach(function (a) { a.cancel(); });
+                    el.animate(
+                        phase === 'in'
+                            // 入场：各自方向滑入 + 淡入（和你原来 #btnd 那版同参数：4vw / 0.2s / ease）
+                            ? [{ transform: g.move, opacity: 0 }, { transform: 'none', opacity: 1 }]
+                            // 退场：反方向滑出 + 淡出
+                            : [{ transform: 'none', opacity: 1 }, { transform: g.move, opacity: 0 }],
+                        {
+                            duration: duration,
+                            easing: 'ease',
+                            // 入场结束即自然状态，不需要填充；退场要停在"滑出+透明"，必须 forwards
+                            fill: phase === 'in' ? 'none' : 'forwards'
+                        });
+                });
+            });
+        }
+        function uiEnter(duration) { uiAnimate('in', duration || 200); }
+        function uiExit(duration) { uiAnimate('out', duration || 200); }
+
+        // 等图片真正就绪：data URI 占位不算，decode() 保证是"解码完成"而不只是字节到齐
+        function whenReady(els, timeout) {
+            var jobs = [];
+            els.forEach(function (el) {
+                if (!el) return;
+                var list = el.tagName === 'IMG' ? [el] : Array.prototype.slice.call(el.querySelectorAll('img'));
+                list.forEach(function (im) {
+                    var s = im.getAttribute('src') || '';
+                    if (s && s.indexOf('data:') !== 0) jobs.push(im.decode ? im.decode() : Promise.resolve());
+                });
+            });
+            jobs = jobs.map(function (p) { return p['catch'](function () { }); });
+            return Promise.race([
+                Promise.all(jobs),
+                new Promise(function (res) { setTimeout(res, timeout); })   // 兜底：某张图挂了也不能让 UI 永不出现
+            ]);
+        }
+
+        // 字体也要等：@font-face 的 MyFont.ttf 有 7.2MB，不等它会出现"文字先用后备字体画一下再变"
+        function whenFontReady() {
+            if (!document.fonts || !document.fonts.load) return Promise.resolve();
+            return Promise.all([
+                document.fonts.load('16px MyFont')['catch'](function () { }),
+                document.fonts.ready['catch'](function () { })
+            ]);
+        }
+
+        // 初始化结束：主背景 + 字体就绪 -> 再等主 UI 的图就绪 -> 露出界面，三组分别滑入。
+        // 超时给到 60s：慢网络下光主背景就要几十秒，5s 的兜底会提前放行、等于门没生效。
+        Promise.all([whenReady([document.getElementById('mainbg')], 60000), whenFontReady()])
+            .then(function () { return whenReady([document.getElementById('btnd')], 60000); })
+            .then(function () {
+                document.getElementById('btnd').style.opacity = '1';
+                uiEnter();
+                $('#copydiv').animate({ 'opacity': '1' }, 200);
+            });
+
+        setTimeout(EnsureNoScrolling, 100)
     </script>
 </body>
 
